@@ -10,11 +10,11 @@ def plot_tree(tree, ax,
               show_support=False,
               align_tips=False,
               branch_lengths=True,
-              colour_dict={},
+              col_dict={},
               label_dict={},
               font_size=10,
               line_col='black',
-              line_width=5):
+              line_width=2):
     '''
 
     Parameters
@@ -35,7 +35,7 @@ def plot_tree(tree, ax,
     width : float
         Desired width of the tree, in axis units. Default 10.
     show_axis : bool
-        Show the axis on the output tree. Default False. This can be toggled
+        Show the axis on the output tree. Default True. This can be toggled
         later directly on the matplotlib ax.
     show_support : bool
         Display branch support on the internal nodes of the tree. Default
@@ -46,16 +46,18 @@ def plot_tree(tree, ax,
     branch_lengths : bool
         If True, the branch lengths provided in the tree are used,
         otherwise all branches are fixed to the same length. Default True.
-    colour_dict : dict
+    col_dict : dict
         User provided dictionary with tip labels as keys and colours
         (in any format accepted by matplotlib
          https://matplotlib.org/stable/users/explain/colors/colors.html
         as values. If this is not
-        specified all labels will be black.
+        specified all labels will be black, if only some labels are specified
+        all others will be black.
     label_dict : TYPE, optional
         User provided dictionary with current tip labels as keys and desired
         tip labels as values. If this is not specified all labels
-        will be as specified in the newick.
+        will be as specified in the newick, if some labels are specified
+        all others will match the newick.
     font_size : int
         Font size for tip labels. Default 10.
     line_col : str or tuple
@@ -63,7 +65,7 @@ def plot_tree(tree, ax,
         https://matplotlib.org/stable/users/explain/colors/colors.html.
         Default is black.
     line_width : float
-        Line width. Default 5.
+        Line width. Default 2.
 
     Returns
     -------
@@ -76,16 +78,16 @@ def plot_tree(tree, ax,
     T = ete3.Tree(tree)
 
     # Define dictionaries for colours and labels if not provided
-    if len(colour_dict) == 0:
-        colour_dict = {x: 'black' for x in T.get_leaf_names()}
-    if len(label_dict) == 0:
-        label_dict = {x: x for x in T.get_leaf_names()}
-
+    for nam in T.get_leaf_names():
+        if nam not in label_dict:
+            label_dict[nam] = nam
+        if nam not in col_dict:
+            col_dict[nam] = 'black'
     # Dictionary to pass apperance params to the plotting function
     appearance = {'font_size': font_size,
                   'line_col': line_col,
                   'line_width': line_width,
-                  'colour_dict': colour_dict,
+                  'col_dict': col_dict,
                   'label_dict': label_dict,
                   'show_support': show_support}
 
@@ -95,7 +97,7 @@ def plot_tree(tree, ax,
     maxdist = ((T.get_farthest_leaf(topology_only=True)[1],
                 T.get_farthest_leaf(topology_only=False)[1],
                 len(T)))
-    print (maxdist)
+
     # Without branch lengths the tree has a root which appears at position -1,
     # so shift the tree over by one unit
     if not branch_lengths:
@@ -216,19 +218,22 @@ def draw_tree(tree, ax,
             x_text_pos = x + textinc
 
         # Plot the tip label
-        ax.text(x_text_pos, -y, tree.name,
-                color=appearance['colour_dict'][tree.name],
+        ax.text(x_text_pos, -y, appearance['label_dict'][tree.name],
+                color=appearance['col_dict'][tree.name],
+                fontsize=appearance['font_size'],
                 va='center')
         
         # Plot the branch to the tip            
         ax.plot([x, x_tip_pos], [-y, -y],
-                color='black')
+                color=appearance['line_col'],
+                lw=appearance['line_width'])
 
         # Add an extra line to the aligned tips if align_tips is specified
         if align_tips:
             ax.plot([x, x_ali_pos], [-y, -y],
-                     color='lightgrey',
-                     ls="-")
+                     color=appearance['line_col'], alpha=0.2,
+                     ls="--",
+                     lw=appearance['line_width'])
         # Store the tip label and the position of the tip on the x and y axis
         ps.append([tree.name, x_tip_pos, -y])
         return (y+yint, y, ps)
@@ -271,10 +276,14 @@ def draw_tree(tree, ax,
         
         # Draw the lines
         # Vertical line
-        ax.plot([x, x], [-y1, -y2], color='black')
+        ax.plot([x, x], [-y1, -y2],
+                color=appearance['line_col'],
+                lw=appearance['line_width'])
         
         # Horizontal line - somehow there are two - forduncs
-        ax.plot([x, x-(td*xint)], [-ym, -ym], color='black')
+        ax.plot([x, x-(td*xint)], [-ym, -ym],
+                color=appearance['line_col'],
+                lw=appearance['line_width'])
 
         # Add branch support if specified
         # TODO - currently lands on top of the branches if branch_lengths
@@ -284,4 +293,5 @@ def draw_tree(tree, ax,
                     va='center', fontsize=8)
 
         # TODO scale bar if branch lengths are on
+        # TODO sometimes there is no root and sometimes it is giant
         return (y, ym, ps)
