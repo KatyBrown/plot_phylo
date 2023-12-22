@@ -4,8 +4,8 @@ import ete3
 def plot_tree(tree, ax,
               xpos=0,
               ypos=0,
-              height=10,
               width=10,
+              height=10,
               show_axis=True,
               show_support=False,
               align_tips=False,
@@ -15,13 +15,69 @@ def plot_tree(tree, ax,
               font_size=10,
               line_col='black',
               line_width=5):
-    
+    '''
+
+    Parameters
+    ----------
+    tree : str
+        Either the path to a newick formatted tree or a string containing
+        a newick formatted tree. Required.
+    ax : matplotlib.axes._axes.Axes,
+        An open matplotlib ax object where the tree will be plotted. Required.
+    x : float
+        Desired position of the root node of the tree on the x axis of ax,
+        in axis units. Default 0. 
+    y : float
+        Desired position of the bottom of the tree on the y axis of ax,
+        in axis units. Default 0. 
+    height : float
+        Desired height of the tree, in axis units. Default 10.
+    width : float
+        Desired width of the tree, in axis units. Default 10.
+    show_axis : bool
+        Show the axis on the output tree. Default False. This can be toggled
+        later directly on the matplotlib ax.
+    show_support : bool
+        Display branch support on the internal nodes of the tree. Default
+        False.
+    align_tips : bool
+        If True, the tip labels will be aligned rather than positioned at
+        the end of the branches. Default False.
+    branch_lengths : bool
+        If True, the branch lengths provided in the tree are used,
+        otherwise all branches are fixed to the same length. Default True.
+    colour_dict : dict
+        User provided dictionary with tip labels as keys and colours
+        (in any format accepted by matplotlib
+         https://matplotlib.org/stable/users/explain/colors/colors.html
+        as values. If this is not
+        specified all labels will be black.
+    label_dict : TYPE, optional
+        User provided dictionary with current tip labels as keys and desired
+        tip labels as values. If this is not specified all labels
+        will be as specified in the newick.
+    font_size : int
+        Font size for tip labels. Default 10.
+    line_col : str or tuple
+        Line colour, in any format allowed by matplotlib
+        https://matplotlib.org/stable/users/explain/colors/colors.html.
+        Default is black.
+    line_width : float
+        Line width. Default 5.
+
+    Returns
+    -------
+    ps : list
+        List of lists - ordered as tip labels, tip label x positions,
+        tip label y positions. All are in the same order.
+
+    '''
     # Read the tree
     T = ete3.Tree(tree)
 
     # Define dictionaries for colours and labels if not provided
     if len(colour_dict) == 0:
-        colour_dict = {x: 'black' for x in tree.get_leaf_names()}
+        colour_dict = {x: 'black' for x in T.get_leaf_names()}
     if len(label_dict) == 0:
         label_dict = {x: x for x in T.get_leaf_names()}
 
@@ -39,23 +95,29 @@ def plot_tree(tree, ax,
     maxdist = ((T.get_farthest_leaf(topology_only=True)[1],
                 T.get_farthest_leaf(topology_only=False)[1],
                 len(T)))
-
-    
+    print (maxdist)
+    # Without branch lengths the tree has a root which appears at position -1,
+    # so shift the tree over by one unit
+    if not branch_lengths:
+        xpos += 1
+        width -= 2
+    elif align_tips:
+        width -= 1
     # Call the main function. The second and third returns are used
     # internally when the function is called recursively but
     # are not needed by the user
     
-    # subtract one from width as the root adds one unit
-    # y is subtracted from the total height to order tip names correctly
-    ax, _, _, ps = draw_tree(T, ax,
-                             x=xpos+1,
-                             y=-(ypos+len(T)),
-                             x0=xpos,
-                             ps=[],
-                             height=height,
-                             width=width-1,
-                             depth=maxdist,
-                             appearance=appearance)
+    _, _, ps = draw_tree(T, ax,
+                         x=xpos,
+                         y=-(ypos+len(T)),
+                         x0=xpos,
+                         ps=[],
+                         height=height,
+                         width=width,
+                         depth=maxdist,
+                         align_tips=align_tips,
+                         branch_lengths=branch_lengths,
+                         appearance=appearance)
     # Hide axis
     if not show_axis:
         ax.set_axis_off()
@@ -81,115 +143,145 @@ def draw_tree(tree, ax,
         ete3 Tree object
     ax : matplotlib.axes._axes.Axes
         An open matplotlib ax object
-    x : int
+    x : float
         Current position on x axis.
-    y : TYPE, optional
+    y : float
         Current position on y axis.
+    ps: list
+        Used internally, list of tip labels and x and y positions
+    height: float
+        Height of the tree in axis units
+    width: float
+        Width of the tree in axis units
+    depth: tuple(float, float, float)
+        Total height and width of the original tree in terms of number of
+        nodes, total branch length, number of tips
+    align_tips: bool
+        If True, the tip labels will be aligned rather than positioned at
+        the end of the branches. Default False.
+    branch_lengths: bool
+        If True, use the branch lengths provided in the tree, otherwise fix
+        all branches to the same length. Default True.
+    appearance: dict
+        Dictionary of parameters specifying the appearance of the tree.
 
     Returns
     -------
-    y   int
+    y   float
         Position of previous node on y axis.
-    ym  int
+    ym  float
         Position of current node on y axis.
-
+    ps  list
+        List of lists - tip labels, tip label x positions,
+        tip label y positions
     '''
     yint = height / depth[2]
-    if tree.is_leaf():
+
+    # td is the branch length - if the branch_lengths parameter is False
+    # it is set to 1
+
+    # If the branch lengths are used, the total width of the tree is in
+    # the tree branch units, otherwise it's the total number of nodes from
+    # the root to the farthest branch
+
+    # textinc stops the tip labels from being immediately next to the tips
+
+    if branch_lengths:
         td = tree.dist
-        if not align_tips:
-            if branch_lengths:
-                totbl = depth[1]
-                xint = width / totbl
-                ax.text(x+(depth[1] * 0.01), -y,
-                        tree.name,
-                        color=appearance['colour_dict'][tree.name],
-                        va='center')
-                ax.plot([x, x-(xint*td)], [-y, -y],
-                        color='black')
-                ps.append([tree.name, x-(xint*td), -y])
-            else:
-                totbl = depth[0]
-                xint = (width - 2) / totbl
-                ax.text(x+0.1, -y, tree.name,
-                        color=appearance['colour_dict'][tree.name],
-                        va='center')
-                ax.plot([x, x-xint], [-y, -y],
-                        color='black')
-                ps.append([tree.name, x-xint, -y])
-        else:
-            if branch_lengths:
-                totbl = depth[1]
-                xint = width / totbl
-                ax.text(((depth[1])*xint)+0.1+x0+1, -y, tree.name,
-                        color=appearance['colour_dict'][tree.name],
-                        va='center')
-                ax.plot([x, x-(xint * td)], [-y, -y],
-                        color='black')
-                ax.plot([x, ((depth[1])*xint)+x0+1], [-y, -y],
-                        color='lightgrey',
-                        ls="-")
-                ps.append([tree.name, ((depth[1])*xint)+x0+1, -y])
-            else:
-                totbl = depth[0]
-                xint = width / totbl
-                ax.text((depth[0]*xint)+x0+1.1, -y, tree.name,
-                        color=appearance['colour_dict'][tree.name],
-                        va='center')
-                ax.plot([x-xint , ((depth[0])*xint)+x0+1], [-y, -y], 
-                        color='black')
-                ps.append([tree.name, ((depth[0])*xint)+x0+1, -y])
-        return (ax, y+yint, y, ps)
+        tot_width = depth[1]
+        textinc = tot_width * 0.1
+
     else:
+        td = 1
+        tot_width = depth[0]
+        textinc = 0.05
+
+    # This interval is used to scale the interval for each node
+    # so the total tree width matches the value specified
+    xint = width / tot_width
+
+    if tree.is_leaf():
+        
+        # Position of the node tip
+        x_tip_pos = x - (xint * td)
+        
+        # x_ali_pos is used to align the tips if align_tips is specified
+        # x_text_pos is the position of the text - if the tips are aligned
+        # the text is also aligned
+        if align_tips:
+            x_ali_pos = (tot_width * xint) + x0 + 1
+            x_text_pos = x_ali_pos + textinc
+        else:
+            x_ali_pos = None
+            x_text_pos = x + textinc
+
+        # Plot the tip label
+        ax.text(x_text_pos, -y, tree.name,
+                color=appearance['colour_dict'][tree.name],
+                va='center')
+        
+        # Plot the branch to the tip            
+        ax.plot([x, x_tip_pos], [-y, -y],
+                color='black')
+
+        # Add an extra line to the aligned tips if align_tips is specified
+        if align_tips:
+            ax.plot([x, x_ali_pos], [-y, -y],
+                     color='lightgrey',
+                     ls="-")
+        # Store the tip label and the position of the tip on the x and y axis
+        ps.append([tree.name, x_tip_pos, -y])
+        return (y+yint, y, ps)
+
+    else:
+        # This section draws the lines for the non-terminal nodes
+        # y1 and y2 are the top and bottom positions of the node on the
+        # y axis, respectively
         y1 = y
         y2 = y
+        # For each tree, all of the children are visited and the function
+        # is recursively called
         for c in tree.children:
-            td = c.dist
+            # Scale by the branch length if branch_lengths is specified
             if branch_lengths:
-                totbl = depth[1]
-                xint = width / totbl
-                ax, y, cym, ps = draw_tree(c, ax, x+(td*xint), y,
-                                           x0=x0, ps=ps,
-                                           height=height,
-                                           width=width,
-                                           depth=depth, 
-                                           align_tips=align_tips,
-                                           branch_lengths=branch_lengths,
-                                           appearance=appearance)
-
+                tdc = c.dist
             else:
-                totbl = depth[0]
-                if align_tips:
-                    xint = width / totbl
-                else:
-                    xint = (width - 2) / totbl
-                ax, y, cym, ps = draw_tree(c, ax, x+xint, y,
-                                           x0=x0, ps=ps,
-                                           height=height,
-                                           width=width,
-                                           depth=depth, 
-                                           align_tips=align_tips,
-                                           branch_lengths=branch_lengths,
-                                           appearance=appearance)
+                tdc = 1
+
+            # The position of the node on the x axis
+            x_vert_pos = x + (tdc * xint)
+            y, cym, ps = draw_tree(c, ax, x_vert_pos, y,
+                                   x0=x0, ps=ps,
+                                   height=height,
+                                   width=width,
+                                   depth=depth, 
+                                   align_tips=align_tips,
+                                   branch_lengths=branch_lengths,
+                                   appearance=appearance)
+
+            # Replace y2 with the current value to increment for the next
+            # node - maybe? - forduncs
             y2 = cym
+            # This is the bit I don't understand - forduncs
             if c is tree.children[0]:
                 y1 = cym
+
         # midpoint of node on y axis
         ym = (y1 + y2)/2
+        
+        # Draw the lines
+        # Vertical line
+        ax.plot([x, x], [-y1, -y2], color='black')
+        
+        # Horizontal line - somehow there are two - forduncs
+        ax.plot([x, x-(td*xint)], [-ym, -ym], color='black')
+
+        # Add branch support if specified
+        # TODO - currently lands on top of the branches if branch_lengths
+        # is switched on
         if appearance['show_support']:
             ax.text(x+0.1, -ym, "%.2f" % tree.support,
                     va='center', fontsize=8)
-        ax.plot([x, x], [-y1, -y2], color='black')
-        td = tree.dist
-        if branch_lengths:
-            totbl = depth[1]
-            xint = width / totbl
-            ax.plot([x, x-(td*xint)], [-ym, -ym], color='black')
-        else:
-            totbl = depth[0]
-            if align_tips:
-                xint = width / totbl
-            else:
-                xint = (width - 2) / totbl
-            ax.plot([x, x-xint], [-ym, -ym], color='black')
-        return (ax, y, ym, ps)
+
+        # TODO scale bar if branch lengths are on
+        return (y, ym, ps)
