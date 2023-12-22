@@ -1,17 +1,52 @@
 #!/usr/bin/env python3
 import ete3
 
-def plot_tree(tree, ax, xpos=0, ypos=0,
-              height=10, width=10,
-              ao=True,
-              support=False, align=False, bl=True, cD={}):
+def plot_tree(tree, ax,
+              xpos=0,
+              ypos=0,
+              height=10,
+              width=10,
+              show_axis=True,
+              show_support=False,
+              align_tips=False,
+              branch_lengths=True,
+              colour_dict={},
+              label_dict={},
+              font_size=10,
+              line_col='black',
+              line_width=5):
+    
+    # Read the tree
     T = ete3.Tree(tree)
+
+    # Define dictionaries for colours and labels if not provided
+    if len(colour_dict) == 0:
+        colour_dict = {x: 'black' for x in tree.get_leaf_names()}
+    if len(label_dict) == 0:
+        label_dict = {x: x for x in T.get_leaf_names()}
+
+    # Dictionary to pass apperance params to the plotting function
+    appearance = {'font_size': font_size,
+                  'line_col': line_col,
+                  'line_width': line_width,
+                  'colour_dict': colour_dict,
+                  'label_dict': label_dict,
+                  'show_support': show_support}
+
+
+    # Calculate the total height and width of the original tree
+    # in terms of number of nodes, total branch length, number of tips
     maxdist = ((T.get_farthest_leaf(topology_only=True)[1],
                 T.get_farthest_leaf(topology_only=False)[1],
                 len(T)))
-    print (cD)
-    if len(cD) == 0:
-        cD = {x: 'black' for x in tree.get_leaf_names()}
+
+    
+    # Call the main function. The second and third returns are used
+    # internally when the function is called recursively but
+    # are not needed by the user
+    
+    # subtract one from width as the root adds one unit
+    # y is subtracted from the total height to order tip names correctly
     ax, _, _, ps = draw_tree(T, ax,
                              x=xpos+1,
                              y=-(ypos+len(T)),
@@ -20,11 +55,9 @@ def plot_tree(tree, ax, xpos=0, ypos=0,
                              height=height,
                              width=width-1,
                              depth=maxdist,
-                             support=support,
-                             align=align,
-                             bl=bl,
-                             cD=cD)
-    if ao:
+                             appearance=appearance)
+    # Hide axis
+    if not show_axis:
         ax.set_axis_off()
     return (ps)
 
@@ -36,10 +69,9 @@ def draw_tree(tree, ax,
               height=10,
               width=10,
               depth=None,
-              support=False,
-              align=False,
-              bl=True,
-              cD={}):
+              align_tips=False,
+              branch_lengths=True,
+              appearance={}):
     '''
     Plot a phylogenetic tree in matplotlib
 
@@ -65,13 +97,13 @@ def draw_tree(tree, ax,
     yint = height / depth[2]
     if tree.is_leaf():
         td = tree.dist
-        if not align:
-            if bl:
+        if not align_tips:
+            if branch_lengths:
                 totbl = depth[1]
                 xint = width / totbl
                 ax.text(x+(depth[1] * 0.01), -y,
                         tree.name,
-                        color=cD[tree.name],
+                        color=appearance['colour_dict'][tree.name],
                         va='center')
                 ax.plot([x, x-(xint*td)], [-y, -y],
                         color='black')
@@ -80,18 +112,18 @@ def draw_tree(tree, ax,
                 totbl = depth[0]
                 xint = (width - 2) / totbl
                 ax.text(x+0.1, -y, tree.name,
-                        color=cD[tree.name],
+                        color=appearance['colour_dict'][tree.name],
                         va='center')
                 ax.plot([x, x-xint], [-y, -y],
                         color='black')
                 ps.append([tree.name, x-xint, -y])
         else:
-            if bl:
+            if branch_lengths:
                 totbl = depth[1]
                 xint = width / totbl
                 ax.text(((depth[1])*xint)+0.1+x0+1, -y, tree.name,
-                        va='center',
-                        color=cD[tree.name])
+                        color=appearance['colour_dict'][tree.name],
+                        va='center')
                 ax.plot([x, x-(xint * td)], [-y, -y],
                         color='black')
                 ax.plot([x, ((depth[1])*xint)+x0+1], [-y, -y],
@@ -102,8 +134,8 @@ def draw_tree(tree, ax,
                 totbl = depth[0]
                 xint = width / totbl
                 ax.text((depth[0]*xint)+x0+1.1, -y, tree.name,
-                        va='center',
-                        color=cD[tree.name])
+                        color=appearance['colour_dict'][tree.name],
+                        va='center')
                 ax.plot([x-xint , ((depth[0])*xint)+x0+1], [-y, -y], 
                         color='black')
                 ps.append([tree.name, ((depth[0])*xint)+x0+1, -y])
@@ -113,20 +145,21 @@ def draw_tree(tree, ax,
         y2 = y
         for c in tree.children:
             td = c.dist
-            if bl:
+            if branch_lengths:
                 totbl = depth[1]
                 xint = width / totbl
                 ax, y, cym, ps = draw_tree(c, ax, x+(td*xint), y,
                                            x0=x0, ps=ps,
                                            height=height,
                                            width=width,
-                                           support=support,
-                                           align=align,
                                            depth=depth, 
-                                           bl=bl, cd=cd)
+                                           align_tips=align_tips,
+                                           branch_lengths=branch_lengths,
+                                           appearance=appearance)
+
             else:
                 totbl = depth[0]
-                if align:
+                if align_tips:
                     xint = width / totbl
                 else:
                     xint = (width - 2) / totbl
@@ -134,27 +167,27 @@ def draw_tree(tree, ax,
                                            x0=x0, ps=ps,
                                            height=height,
                                            width=width,
-                                           support=support,
-                                           align=align,
-                                           depth=depth,
-                                           bl=bl, cd=cd)
+                                           depth=depth, 
+                                           align_tips=align_tips,
+                                           branch_lengths=branch_lengths,
+                                           appearance=appearance)
             y2 = cym
             if c is tree.children[0]:
                 y1 = cym
         # midpoint of node on y axis
         ym = (y1 + y2)/2
-        if support:
+        if appearance['show_support']:
             ax.text(x+0.1, -ym, "%.2f" % tree.support,
                     va='center', fontsize=8)
         ax.plot([x, x], [-y1, -y2], color='black')
         td = tree.dist
-        if bl:
+        if branch_lengths:
             totbl = depth[1]
             xint = width / totbl
             ax.plot([x, x-(td*xint)], [-ym, -ym], color='black')
         else:
             totbl = depth[0]
-            if align:
+            if align_tips:
                 xint = width / totbl
             else:
                 xint = (width - 2) / totbl
