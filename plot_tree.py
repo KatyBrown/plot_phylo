@@ -12,6 +12,8 @@ def plot_tree(tree, ax,
               align_tips=False,
               rev_align_tips=False,
               branch_lengths=True,
+              scale_bar=True,
+              scale_bar_width=None,
               reverse=False,
               col_dict={},
               label_dict={},
@@ -51,6 +53,11 @@ def plot_tree(tree, ax,
     branch_lengths : bool
         If True, the branch lengths provided in the tree are used,
         otherwise all branches are fixed to the same length. Default True.
+    scale_bar: bool
+        If True and branch_lengths is True, draw a scale bar.
+    scale_bar_width: float
+        Width of scale bar in axis units. If not specified, the scale bar
+        will be 1/4 of the width of the tree.
     reverse: bool
         If True, reverse the tree on the y-axis, showing the root on the right
         hand side. Default False.
@@ -74,6 +81,7 @@ def plot_tree(tree, ax,
         Default is black.
     line_width : float
         Line width. Default 2.
+
 
     Returns
     -------
@@ -120,7 +128,7 @@ def plot_tree(tree, ax,
 
     _, _, ps = draw_tree(T, ax,
                          x=xpos,
-                         y=ypos-len(T)-height,
+                         y=-ypos-height,
                          x0=xpos,
                          ps=[],
                          height=height,
@@ -137,6 +145,11 @@ def plot_tree(tree, ax,
     # Hide axis
     if not show_axis:
         ax.set_axis_off()
+    
+    if scale_bar and branch_lengths:
+        draw_scale_bar(ax, width, height, maxdist, ypos,
+                       scale_bar_width=scale_bar_width,
+                       appearance=appearance)
     return (ps)
 
 
@@ -214,17 +227,15 @@ def draw_tree(tree, ax,
     if branch_lengths:
         td = tree.dist
         tot_width = depth[1]
-        textinc = tot_width * 0.1
 
     else:
         td = 1
         tot_width = depth[0] + 1
-        textinc = 0.05
 
     # This interval is used to scale the interval for each node
     # so the total tree width matches the value specified
     xint = width / tot_width
-
+    
     if tree.is_leaf():
 
         # Position of the node tip
@@ -235,10 +246,10 @@ def draw_tree(tree, ax,
         # the text is also aligned
         if align_tips or rev_align_tips:
             x_ali_pos = (tot_width * xint) + x0 + 1
-            x_text_pos = x_ali_pos + textinc
+            x_text_pos = x_ali_pos
         else:
             x_ali_pos = None
-            x_text_pos = x + textinc
+            x_text_pos = x
         xmax = (tot_width * xint)
         if reverse:
             x_tip_pos = xmax - x_tip_pos
@@ -250,7 +261,7 @@ def draw_tree(tree, ax,
         else:
             hali = 'left'
         # Plot the tip label
-        textpos = ax.text(x_text_pos, -y, appearance['label_dict'][tree.name],
+        textpos = ax.text(x_text_pos, -y, " %s" % appearance['label_dict'][tree.name],
                           color=appearance['col_dict'][tree.name],
                           fontsize=appearance['font_size'],
                           va='center', ha=hali)
@@ -378,33 +389,9 @@ def reverse_align(ax, ps, reverse):
         alignment lines (if aligned). All are in the same order. Updated
         based on new alignment.
     '''
-    x_extremes = []
-    ys = []
-    # Used to determine which x co-ordinates to take depending on the
-    # tree orientation
-    if reverse:
-        indi = 0
-    else:
-        indi = 1
+
+    maxi, ys, indi = get_x_max(ax, ps, reverse)
     alis = ['left', 'right']
-    for pnam, ptext, pline in ps:
-        # Get the data units of the box which encloses the text
-        box = ax.transData.inverted().transform(
-            ptext.get_window_extent())
-        # Get the rightmost point of the text box (regular tree)
-        # or the leftmost (reversed tree)
-        x_extreme = box[indi][0]
-        x_extremes.append(x_extreme)
-
-        # Store the y axis positions
-        ys.append(box[1][1])
-
-    if not reverse:
-        # For right alignment, take the rightmost x point
-        maxi = max(x_extremes)
-    else:
-        # For left alignment, take the leftmost x point
-        maxi = min(x_extremes)
 
     ps_new = []
     for i, p in enumerate(ps):
@@ -430,3 +417,97 @@ def reverse_align(ax, ps, reverse):
         # Store the new values
         ps_new.append(p)
     return (ps_new)
+
+
+def draw_scale_bar(ax, width, height, depth, bottom, scale_bar_width=None,
+                   appearance={'font_size': 10}):
+    '''
+    Adds a scale bar to the tree - only when branch lengths are specified.
+    
+    The default length is 0.25 * total tree width, or it can be specified
+    using scale_bar_width.
+    
+    Parameters
+    ----------
+    ax : matplotlib.axes._axes.Axes
+        An open matplotlib ax object
+    
+    height : float
+        Height of the tree, in axis units.
+    width : float
+        Width of the tree, in axis units.
+    depth: tuple(float, float, float)
+        Total height and width of the original tree in terms of number of
+        nodes, total branch length, number of tips
+    bottom: float
+        The bottom position of the tree on the y axis
+    scale_bar_width: float
+        The desired width of the scale bar, if not specified
+        tree width * 0.25 is used
+    appearance: dict
+        Dictionary of parameters specifying the appearance of the tree.
+    '''
+    # depth[1] - total width of the tree in tree units
+    # width - total width of tree in axis units
+    # xint - width of one tree unit in axis units
+    xint = width / depth[1]
+
+    # Distance from x axis to start the scale bar
+    # 10% of total tree width
+    interx = width * 0.1
+    
+    # Distance on y axis to extend the bracket ends on the scale bar
+    # 10% of the height of one node
+    intery = (height / depth[2]) * 0.1
+
+    bottom -= (height / depth[2])
+    # scale_bar_width = total width of scale bar in axis units
+    if not scale_bar_width:
+        scale_bar_width = width * 0.25
+    
+    # Convert the scale bar width to tree units
+    scale = scale_bar_width / xint
+    
+    # Draw the horizontal line
+    ax.plot([interx, interx + scale_bar_width],
+            [bottom, bottom], color='black')
+    
+    # Bracket the ends of the scale bar with small vertical lines
+    ax.plot([interx, interx],
+            [bottom-intery, bottom+intery], color='black')
+    ax.plot([interx+scale_bar_width, interx+scale_bar_width],
+            [bottom-intery, bottom+intery], color='black')
+
+    # Add the scale text
+    ax.text(interx + (scale_bar_width / 2), bottom+intery, "%.3f" % scale,
+            va='bottom', ha='center', fontsize=appearance['font_size'])
+    
+        
+def get_x_max(ax, ps, reverse):
+    x_extremes = []
+    ys = []
+    # Used to determine which x co-ordinates to take depending on the
+    # tree orientation
+    if reverse:
+        indi = 0
+    else:
+        indi = 1
+    for pnam, ptext, pline in ps:
+        # Get the data units of the box which encloses the text
+        box = ax.transData.inverted().transform(
+            ptext.get_window_extent())
+        # Get the rightmost point of the text box (regular tree)
+        # or the leftmost (reversed tree)
+        x_extreme = box[indi][0]
+        x_extremes.append(x_extreme)
+
+        # Store the y axis positions
+        ys.append(box[1][1])
+
+    if not reverse:
+        # For right alignment, take the rightmost x point
+        maxi = max(x_extremes)
+    else:
+        # For left alignment, take the leftmost x point
+        maxi = min(x_extremes)
+    return (maxi, ys, indi)
