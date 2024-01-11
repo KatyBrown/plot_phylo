@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import ete3
 
+
 def plot_tree(tree, ax,
               xpos=0,
               ypos=0,
@@ -18,7 +19,6 @@ def plot_tree(tree, ax,
               line_col='black',
               line_width=2):
     '''
-
     Parameters
     ----------
     tree : str
@@ -28,10 +28,10 @@ def plot_tree(tree, ax,
         An open matplotlib ax object where the tree will be plotted. Required.
     x : float
         Desired position of the root node of the tree on the x axis of ax,
-        in axis units. Default 0. 
+        in axis units. Default 0.
     y : float
         Desired position of the bottom of the tree on the y axis of ax,
-        in axis units. Default 0. 
+        in axis units. Default 0.
     height : float
         Desired height of the tree, in axis units. Default 10.
     width : float
@@ -80,7 +80,6 @@ def plot_tree(tree, ax,
     ps : list
         List of lists - ordered as tip labels, tip label text objects,
         alignment lines (if aligned). All are in the same order.
-
     '''
     # Read the tree
     T = ete3.Tree(tree)
@@ -98,7 +97,6 @@ def plot_tree(tree, ax,
                   'col_dict': col_dict,
                   'label_dict': label_dict,
                   'show_support': show_support}
-
 
     # Calculate the total height and width of the original tree
     # in terms of number of nodes, total branch length, number of tips
@@ -119,7 +117,7 @@ def plot_tree(tree, ax,
     # Call the main function. The second and third returns are used
     # internally when the function is called recursively but
     # are not needed by the user
-    
+
     _, _, ps = draw_tree(T, ax,
                          x=xpos,
                          y=ypos-len(T)-height,
@@ -133,7 +131,6 @@ def plot_tree(tree, ax,
                          branch_lengths=branch_lengths,
                          reverse=reverse,
                          appearance=appearance)
-    
 
     if rev_align_tips:
         ps = reverse_align(ax, ps, reverse)
@@ -141,6 +138,7 @@ def plot_tree(tree, ax,
     if not show_axis:
         ax.set_axis_off()
     return (ps)
+
 
 def draw_tree(tree, ax,
               x=0,
@@ -228,10 +226,10 @@ def draw_tree(tree, ax,
     xint = width / tot_width
 
     if tree.is_leaf():
-        
+
         # Position of the node tip
         x_tip_pos = x - (xint * td)
-        
+
         # x_ali_pos is used to align the tips if align_tips is specified
         # x_text_pos is the position of the text - if the tips are aligned
         # the text is also aligned
@@ -261,20 +259,19 @@ def draw_tree(tree, ax,
         ax.plot([x, x_tip_pos], [-y, -y],
                 color=appearance['line_col'],
                 lw=appearance['line_width'])
-        
 
         # Add an extra line to the aligned tips if align_tips is specified
         if align_tips or rev_align_tips:
             line = ax.plot([x, x_ali_pos], [-y, -y],
-                            color=appearance['line_col'], alpha=0.2,
-                            ls="--",
-                            lw=appearance['line_width'])
+                           color=appearance['line_col'], alpha=0.2,
+                           ls="--",
+                           lw=appearance['line_width'])
             ps.append([tree.name, textpos, line])
         else:
             ps.append([tree.name, textpos])
 
         # Store the tip label and the position of the tip on the x and y axis
-        
+
         return (y+yint, y, ps)
 
     else:
@@ -291,23 +288,21 @@ def draw_tree(tree, ax,
 
             # The position of the node on the x axis
             x_vert_pos = x + (tdc * xint)
-            
+
             # returns y - the bottom position of all the labels so far
             # cym - the middle of the previous node on the y axis
-            # ps - 
-            
 
             y, cym, ps = draw_tree(c, ax, x_vert_pos, y,
                                    x0=x0, ps=ps,
                                    height=height,
                                    width=width,
-                                   depth=depth, 
+                                   depth=depth,
                                    align_tips=align_tips,
                                    rev_align_tips=rev_align_tips,
                                    branch_lengths=branch_lengths,
                                    reverse=reverse,
                                    appearance=appearance)
-            
+
             # y1 and y2 are the top and bottom positions of the current
             # child node on the y axis, respectively
             # Gives the extent of the vertical line for this segment
@@ -319,7 +314,7 @@ def draw_tree(tree, ax,
 
         # midpoint of node on y axis
         ym = (y1 + y2)/2
-        
+
         if reverse:
             xmax = (tot_width * xint)
             x = xmax - x
@@ -329,7 +324,7 @@ def draw_tree(tree, ax,
         ax.plot([x, x], [-y1, -y2],
                 color=appearance['line_col'],
                 lw=appearance['line_width'])
-        
+
         # Horizontal line - each node draws the one line that
         # projects towards its parent so x is the position of the
         # vertical line and x-(td*xint) is one increment back
@@ -342,7 +337,7 @@ def draw_tree(tree, ax,
         else:
             ax.plot([x, x+(td*xint)], [-ym, -ym],
                     color=appearance['line_col'],
-                    lw=appearance['line_width'])            
+                    lw=appearance['line_width'])
 
         # Add branch support if specified
         # TODO - currently lands on top of the branches if branch_lengths
@@ -355,14 +350,15 @@ def draw_tree(tree, ax,
         # TODO sometimes there is no root and sometimes it is giant
         return (y, ym, ps)
 
+
 def reverse_align(ax, ps, reverse):
     '''
     Realigns the text in the tip labels so that for a standard tree, the
     text is right aligned, for a mirrored tree (root on the right), the
-    text is left aligned. Only used when tip labels are set to be aligned. 
-    
+    text is left aligned. Only used when tip labels are set to be aligned.
+
     This has to happen once the whole plot is drawn as the limits
-    of the text only exist once the text exists   
+    of the text only exist once the text exists.
 
     Parameters
     ----------
@@ -409,28 +405,28 @@ def reverse_align(ax, ps, reverse):
     else:
         # For left alignment, take the leftmost x point
         maxi = min(x_extremes)
-        
+
     ps_new = []
     for i, p in enumerate(ps):
         # Move the text to the right position
         p[1].set_position([maxi, ys[i]])
-        
+
         # Get the current left end of the dotted alignment line
         oldline = p[2][0].get_xdata()[0]
-        
+
         # Left or right align the text
         p[1].set_horizontalalignment(alis[indi])
-        
+
         # Get the updated text position limits
         pbox = ax.transData.inverted().transform(p[1].get_window_extent())
-        
+
         # Move the dotted line to hit the new text position
         # int(not indi) swaps 0 for 1
         p[2][0].set_xdata([pbox[int(not indi)][0], oldline])
-        
+
         # Set the y axis position
         p[1].set_verticalalignment('center')
-        
+
         # Store the new values
         ps_new.append(p)
     return (ps_new)
