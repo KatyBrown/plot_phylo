@@ -1,5 +1,7 @@
 # plot_tree
 
+![Illustration](./examples/layered.png "Illustration")
+
 This module allows the user to plot a phylogenetic tree on an existing matplotlib axis.
 
 This means that:
