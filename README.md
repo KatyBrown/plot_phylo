@@ -67,7 +67,7 @@ For example, the first few items in the list returned from the function call abo
 
 `xmin`, `xmid` and `xmax` are the positions of the left, centre and right of the tip label text on the x-axis.
 
-`ymin`, `ymid` and ymax` are the positions of the bottom, centre and top of the tip label text on the y-axis.
+`ymin`, `ymid` and `ymax` are the positions of the bottom, centre and top of the tip label text on the y-axis.
 
 `ind` is the position of this label on the tree, reading from top to bottom, starting at 0.
 
@@ -127,7 +127,7 @@ For example:
 # Draw the plot and set the axis limits
 f = plt.figure(figsize=(8, 10))
 ax = plt.subplot()
-ax.set_xlim(0, 50)
+ax.set_xlim(0, 60)
 ax.set_ylim(0, 20)
 
 # Set values for xpos, ypos, height and width
@@ -272,7 +272,6 @@ plt.savefig("examples/nobranchlengths_ali.png", bbox_inches='tight')
 ```
 ![No branch lengths aligned](./examples/nobranchlengths_ali.png "No branch lengths aligned")
 
-
 * **`scale_bar`** (`bool`, Default True)
 
 	If True and branch_lengths is True, draw a scale bar.
@@ -282,10 +281,10 @@ plt.savefig("examples/nobranchlengths_ali.png", bbox_inches='tight')
 	Width of scale bar in axis units. If not specified, the scale bar will be 1/4 of the width of the tree.
 
 * **`reverse`** (`bool`, Default False)
+*
 	If True, mirror the tree on the y-axis, showing the root on the right-hand side.
 
 With `reverse=True`:
-
 
 ```
 f = plt.figure(figsize=(8, 10))
@@ -298,7 +297,6 @@ plt.savefig("examples/reversed.png", bbox_inches='tight')
 
 * **`col_dict`** (`dict`, Default {})
 	User provided dictionary with tip labels as keys and colours (in any [format accepted by matplotlib](https://matplotlib.org/stable/users/explain/colors/colors.html) as values. If this is not specified all labels will be black, if only some labels are specified all others will be black.
-
 
 With `col_dict={'Macaca mulatta': 'orange, 'Gorilla gorilla': 'blue'}`:
 
