@@ -13,3 +13,15 @@ The module depends on the ETE Toolkit, an existing Python framework for analysin
 
 ## Quick Start
 
+To draw a phylogeny under the default settings onto a blank figure.
+
+```
+f = plt.figure(figsize=(8, 10))
+ax = plt.subplot()
+results = plot_tree.plot_tree("examples/primates.nw", ax)
+```
+
+![Basic Tree](examples/basic_tree.png "Basic Tree")
+
+
+
