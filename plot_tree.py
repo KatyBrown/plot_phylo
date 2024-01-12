@@ -7,8 +7,8 @@ def plot_tree(tree, ax,
               ypos=0,
               width=10,
               height=10,
-              show_axis=True,
-              show_support=False,
+              show_axis=False,
+              show_support=True,
               align_tips=False,
               rev_align_tips=False,
               branch_lengths=True,
@@ -19,7 +19,7 @@ def plot_tree(tree, ax,
               label_dict={},
               font_size=10,
               line_col='black',
-              line_width=2):
+              line_width=1):
     '''
     Parameters
     ----------
@@ -28,10 +28,10 @@ def plot_tree(tree, ax,
         a newick formatted tree. Required.
     ax : matplotlib.axes._axes.Axes,
         An open matplotlib ax object where the tree will be plotted. Required.
-    x : float
+    xpos : float
         Desired position of the root node of the tree on the x axis of ax,
         in axis units. Default 0.
-    y : float
+    ypos : float
         Desired position of the bottom of the tree on the y axis of ax,
         in axis units. Default 0.
     height : float
@@ -145,12 +145,53 @@ def plot_tree(tree, ax,
     # Hide axis
     if not show_axis:
         ax.set_axis_off()
-
     if scale_bar and branch_lengths:
-        draw_scale_bar(ax, width, height, maxdist, ypos,
-                       scale_bar_width=scale_bar_width,
-                       appearance=appearance)
-    return (ps)
+        if not reverse:
+            draw_scale_bar(ax, width, height, maxdist, xpos, ypos,
+                           scale_bar_width=scale_bar_width,
+                           appearance=appearance)
+        else:
+            draw_scale_bar(ax, width, height, maxdist, -xpos, ypos,
+                           scale_bar_width=scale_bar_width,
+                           appearance=appearance)            
+    textobj = [p[1] for p in ps]
+    return (get_boxes(ax, textobj))
+
+
+def get_boxes(ax, texts):
+    '''
+    Converts a list of text objects to their co-ordinates on the axis in
+    axis units.
+
+    Parameters
+    ----------
+    ax : TYPE
+        DESCRIPTION.
+    texts : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    boxpos : TYPE
+        DESCRIPTION.
+
+    '''
+    boxpos = dict()
+    for i, txt in enumerate(texts):
+        box = ax.transData.inverted().transform(txt.get_window_extent())
+        nam = txt.get_text().strip()
+        boxpos[nam] = dict()
+        boxpos[nam]['index'] = i
+        boxpos[nam]['xmin'] = box[0][0].round(3)
+        boxpos[nam]['xmax'] = box[1][0].round(3)
+        boxpos[nam]['ymin'] = box[0][1].round(3)
+        boxpos[nam]['ymax'] = box[1][1].round(3)
+        boxpos[nam]['ymid'] = (box[0][1] + ((
+            box[1][1] - box[0][1]) / 2)).round(3)
+        boxpos[nam]['xmid'] = (
+            box[0][0] + ((box[1][0] - box[0][1]) / 2)).round(3)
+
+    return (boxpos)
 
 
 def draw_tree(tree, ax,
@@ -213,7 +254,10 @@ def draw_tree(tree, ax,
         List of lists - ordered as tip labels, tip label text objects,
         alignment lines (if aligned). All are in the same order.
     '''
-    yint = height / depth[2]
+    # This is the increment for the position of each terminal node on
+    # the y axis. 
+    # The number of nodes - 1 is used because one branch will be at position 0
+    yint = height / (depth[2] - 1)
 
     # td is the branch length - if the branch_lengths parameter is False
     # it is set to 1
@@ -262,7 +306,7 @@ def draw_tree(tree, ax,
             hali = 'left'
         # Plot the tip label
         textpos = ax.text(x_text_pos, -y,
-                          "  %s" % appearance['label_dict'][tree.name],
+                          "  %s  " % appearance['label_dict'][tree.name],
                           color=appearance['col_dict'][tree.name],
                           fontsize=appearance['font_size'],
                           va='center', ha=hali)
@@ -355,8 +399,13 @@ def draw_tree(tree, ax,
         # TODO - currently lands on top of the branches if branch_lengths
         # is switched on
         if appearance['show_support']:
-            ax.text(x+0.1, -ym, "%.2f" % tree.support,
-                    va='center', fontsize=8)
+            if not reverse:
+                ax.text(x, -ym, " %.2f" % tree.support, ha='left',
+                        va='center', fontsize=appearance['font_size']-2)
+            else:
+                ax.text(x, -ym, "%.2f " % tree.support, ha='right',
+                        va='center', fontsize=appearance['font_size']-2)
+
         return (y, ym, ps)
 
 
@@ -442,7 +491,8 @@ def reverse_align(ax, ps, reverse):
     return (ps_new)
 
 
-def draw_scale_bar(ax, width, height, depth, bottom, scale_bar_width=None,
+def draw_scale_bar(ax, width, height, depth, left, bottom,
+                   scale_bar_width=None,
                    appearance={'font_size': 10}):
     '''
     Adds a scale bar to the tree - only when branch lengths are specified.
@@ -491,15 +541,15 @@ def draw_scale_bar(ax, width, height, depth, bottom, scale_bar_width=None,
     scale = scale_bar_width / xint
 
     # Draw the horizontal line
-    ax.plot([interx, interx + scale_bar_width],
+    ax.plot([left+interx, left+interx+scale_bar_width],
             [bottom, bottom], color='black')
 
     # Bracket the ends of the scale bar with small vertical lines
-    ax.plot([interx, interx],
+    ax.plot([left+interx, left+interx],
             [bottom-intery, bottom+intery], color='black')
-    ax.plot([interx+scale_bar_width, interx+scale_bar_width],
+    ax.plot([left+interx+scale_bar_width, left+interx+scale_bar_width],
             [bottom-intery, bottom+intery], color='black')
 
     # Add the scale text
-    ax.text(interx + (scale_bar_width / 2), bottom+intery, "%.3f" % scale,
-            va='bottom', ha='center', fontsize=appearance['font_size'])
+    ax.text(left+interx+(scale_bar_width/2), bottom+intery, "%.3f" % scale,
+            va='bottom', ha='center', fontsize=appearance['font_size']-2)
