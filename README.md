@@ -296,6 +296,7 @@ plt.savefig("examples/reversed.png", bbox_inches='tight')
 ![Mirrored Tree](./examples/reversed.png "Mirrored Tree")
 
 * **`col_dict`** (`dict`, Default {})
+
 	User provided dictionary with tip labels as keys and colours (in any [format accepted by matplotlib](https://matplotlib.org/stable/users/explain/colors/colors.html) as values. If this is not specified all labels will be black, if only some labels are specified all others will be black.
 
 With `col_dict={'Macaca mulatta': 'orange, 'Gorilla gorilla': 'blue'}`:
@@ -329,12 +330,15 @@ plt.savefig("examples/labels.png", bbox_inches='tight')
 
 
 * **`font_size`** (`int`, Default 10)
+
 	Font size for tip labels. Branch support and scale bar labels will be two sizes smaller.
  
 * **`line_col`** (`str` or `tuple`, Default 'black')
+
 	Line colour, in any [format accepted by matplotlib](https://matplotlib.org/stable/users/explain/colors/colors.html).
 
 * **`line_width`** (`float`, Default 2)
+
 	Line width.
 
 ## Detailed Example
