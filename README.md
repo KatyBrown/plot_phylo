@@ -65,8 +65,10 @@ For example, the first few items in the list returned from the function call abo
 ...
 ```
 
-`xmin`, `xmid` and xmax` are the positions of the left, centre and right of the tip label text on the x-axis.
+`xmin`, `xmid` and `xmax` are the positions of the left, centre and right of the tip label text on the x-axis.
+
 `ymin`, `ymid` and ymax` are the positions of the bottom, centre and top of the tip label text on the y-axis.
+
 `ind` is the position of this label on the tree, reading from top to bottom, starting at 0.
 
 For example, for the first list item, Cercopithecus neglectus is the tip label. On the plot, this label spans positions 9.656 to 16.336 on the x-axis and 9.882 to 10.118 on the y axis. It is at position 0 in the tree.
@@ -87,7 +89,7 @@ plt.xlim(-2, 20)
 plt.ylim(-2, 11)
 
 # Draw the tree
-results = plot_tree.plot_tree("%s/examples/primates.nw" % path, a)
+results = plot_tree.plot_tree("examples/primates.nw", a)
 
 # Retrieve the first result - for C. neglectus
 c_neg_results = results['Cercopithecus neglectus']
@@ -103,9 +105,10 @@ plt.scatter(c_neg_results['xmax'], c_neg_results['ymin'], color='blue', s=15)
 plt.scatter(c_neg_results['xmax'], c_neg_results['ymax'], color='orange', s=15)
 
 # Save
-f.savefig("%s/examples/basic_plot_box.png" % path, bbox_inches='tight')
+f.savefig("examples/basic_plot_box.png", bbox_inches='tight')
 
 ```
+![Basic tree with box](./examples/basic_plot_box.png "Basic tree with box")
 
 ## Positioning the Plot
 Using the `xpos`, `ypos`, `height` and `width` parameters, the exact location of the tree within the axis can be specified.
@@ -164,6 +167,8 @@ ax.plot([xpos_val,
 plt.savefig("examples/tree_pos.png", bbox_inches='tight')
 
 ```
+![Position](./examples/tree_pos.png "Position")
+
 
 ## Parameters
 * **`tree`** (`str`, Required)
@@ -178,91 +183,24 @@ plt.savefig("examples/tree_pos.png", bbox_inches='tight')
 
 	Desired position of the root of the tree on the x axis, in axis units. 
 
-With `xpos=25`
-```
-f = plt.figure(figsize=(8, 10))
-
-ax = plt.subplot()
-# xlim is set explicitly before drawing the plot
-ax.set_xlim(0, 50)
-
-results = plot_tree.plot_tree("examples/primates.nw", ax, xpos=25, show_axis=True)
-
-# Save the tree - matplotlib
-plt.savefig("examples/xpos.png", bbox_inches='tight')
-```
-![xpos](./examples/xpos.png "xpos")
-
-
 * **`ypos`** (`float`, Default 0)
 
 	Desired position of the bottom of the tree on the y axis, in axis units. 
-
-With `ypos=15`
-```
-f = plt.figure(figsize=(8, 10))
-
-ax = plt.subplot()
-ax.set_xlim(-1, 15)
-# ylim is set explicitly before drawing the plot
-ax.set_ylim(0, 30)
-
-results = plot_tree.plot_tree("examples/primates.nw", ax, ypos=15, show_axis=True)
-
-# Save the tree - matplotlib
-plt.savefig("examples/ypos.png", bbox_inches='tight')
-```
-![ypos](./examples/ypos.png "ypos")
 
 * **`height`** (`float`, Default 10)
 
 	Desired height of the tree, in axis units. Regardless of the height of the axis, the tree with span from `ypos` to `ypos + height`.
 
-With `height=15`:
-```
-f = plt.figure(figsize=(8, 10))
-
-ax = plt.subplot()
-ax.set_xlim(-1, 25)
-# ylim is set explicitly before drawing the plot
-ax.set_ylim(0, 20)
-
-results = plot_tree.plot_tree("examples/primates.nw", ax, height=15, show_axis=True)
-
-# Save the tree - matplotlib
-plt.savefig("examples/height.png", bbox_inches='tight')
-```
-![height](./examples/height.png "height")
-
 * **`width`** (`float`, Default 10)
 
 	Desired width of the tree, in axis units. Default 10.
-
-With `width=12`:
-```
-f = plt.figure(figsize=(8, 10))
-
-ax = plt.subplot()
-ax.set_xlim(-1, 20)
-# ylim is set explicitly before drawing the plot
-ax.set_ylim(-1, 12)
-
-results = plot_tree.plot_tree("examples/primates.nw", ax, width=12, show_axis=True)
-
-# Save the tree - matplotlib
-plt.savefig("examples/width.png", bbox_inches='tight')
-```
-
-![width](./examples/width.png "width")
 
 * **`show_axis`** (`bool`, Default False)
  
 	Show the axis lines and ticks on the output tree. 
 
-
 * **`show_support`** (`bool`, Default False)
 	Display branch support on the internal nodes of the tree. 
-
 
 * **`align_tips`** (`bool`, Default False)
 
