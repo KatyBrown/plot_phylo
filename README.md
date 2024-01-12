@@ -263,7 +263,7 @@ f = plt.figure(figsize=(8, 10))
 ax = plt.subplot()
 ax.set_xlim(-1, 20)
 # ylim is set explicitly before drawing the plot
-ax.set_ylim(-1, 12)
+ax.set_ylim(-1, 10)
 
 results = plot_tree.plot_tree("examples/primates.nw", ax, branch_lengths=False, align_tips=True)
 
