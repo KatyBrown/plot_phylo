@@ -21,7 +21,7 @@ ax = plt.subplot()
 results = plot_tree.plot_tree("examples/primates.nw", ax)
 ```
 
-![Basic Tree](examples/basic_tree.png "Basic Tree")
+![Basic Tree](./examples/basic_tree.png "Basic Tree")
 
 
 
