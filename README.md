@@ -12,6 +12,8 @@ This means that:
 
 The module depends on the [ETE Toolkit](http://etetoolkit.org/), an existing Python framework for analysing and visualising phylogenetic trees, plus the [matplotlib](https://matplotlib.org/) visualisation library.
 
+The tree used in these examples is from the [10K trees](https://10ktrees.nunn-lab.org/) project and is illustrative only. The secondary tree shown in the detailed example is manually edited and not based on biological data.
+
 
 ## Quick Start
 
