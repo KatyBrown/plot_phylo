@@ -14,6 +14,13 @@ The module depends on the [ETE Toolkit](http://etetoolkit.org/), an existing Pyt
 
 The tree used in these examples is from the [10K trees](https://10ktrees.nunn-lab.org/) project and is illustrative only. The secondary tree shown in the detailed example is manually edited and not based on biological data.
 
+## Installation
+The module can be installed using pip
+`pip install plot_phylo`
+
+You can also download the latest release [here](https://github.com/KatyBrown/plot_phylo/releases/latest)
+
+Or clone this repository directly.
 
 ## Quick Start
 
