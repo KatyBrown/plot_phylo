@@ -20,6 +20,9 @@ The tree used in these examples is from the [10K trees](https://10ktrees.nunn-la
 To draw a phylogeny under the default settings onto a blank figure.
 
 ```
+import matplotlib.pyplot as plt
+import plot_phylo
+
 # Create an empty plot, 8in (width) by 10in (height) - matplotlib
 f = plt.figure(figsize=(8, 10))
 
