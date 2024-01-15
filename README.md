@@ -1,4 +1,4 @@
-# plot_tree
+# plot_phylo
 
 ![Illustration](./examples/layered.png "Illustration")
 
@@ -26,8 +26,8 @@ f = plt.figure(figsize=(8, 10))
 # Add an axis - matplotlib
 ax = plt.subplot()
 
-# Plot the tree on this axis, using the default settings - plot_tree
-results = plot_tree.plot_tree("examples/primates.nw", ax)
+# Plot the tree on this axis, using the default settings - plot_phylo
+results = plot_phylo.plot_phylo("examples/primates.nw", ax)
 
 # Save the tree - matplotlib
 plt.savefig("examples/basic_plot.png", bbox_inches='tight')
@@ -39,7 +39,7 @@ The output of this function is:
 ## Adding matplotlib Elements
 One of the main advantages of this module is that, as plots are generated using matplotlib and added to an active axis, other elements of matplotlib plots can be incorporated - the plot remains activate and can be edited.
 
-The plot_tree function returns a dictionary where the keys are the tip labels and the values are the boundaries of the text boxes containing the tip labels, in axis units. 
+The plot_phylo function returns a dictionary where the keys are the tip labels and the values are the boundaries of the text boxes containing the tip labels, in axis units. 
 
 For example, the first few items in the list returned from the function call above are as follows:
 
@@ -93,7 +93,7 @@ plt.xlim(-2, 20)
 plt.ylim(-2, 11)
 
 # Draw the tree
-results = plot_tree.plot_tree("examples/primates.nw", a)
+results = plot_phylo.plot_phylo("examples/primates.nw", a)
 
 # Retrieve the first result - for C. neglectus
 c_neg_results = results['Cercopithecus neglectus']
@@ -140,8 +140,8 @@ ypos_val = 10
 height_val = 5
 width_val = 20
 
-# Run the plot_tree function with these values
-results = plot_tree.plot_tree("examples/primates.nw", ax, xpos=xpos_val, ypos=ypos_val, height=height_val, width=width_val, show_axis=True, branch_lengths=False)
+# Run the plot_phylo function with these values
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, xpos=xpos_val, ypos=ypos_val, height=height_val, width=width_val, show_axis=True, branch_lengths=False)
 
 # Annotate these points on the tree using matplotlib functions
 # Mark the bottom left corner
@@ -214,7 +214,7 @@ With `align_tips=True`
 ```
 f = plt.figure(figsize=(8, 10))
 ax = plt.subplot()
-results = plot_tree.plot_tree("examples/primates.nw", ax, align_tips=True)
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, align_tips=True)
 plt.savefig("examples/align_tips.png", bbox_inches='tight')
 ```
 
@@ -233,7 +233,7 @@ ax = plt.subplot()
 # For reverse aligned tip labels the axis limits need to be specified in advance
 ax.set_xlim(-1, 12)
 
-results = plot_tree.plot_tree("examples/primates.nw", ax, rev_align_tips=True)
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, rev_align_tips=True)
 plt.savefig("examples/rev_align_tips.png", bbox_inches='tight')
 ```
 ![Reverse Aligned Tip Labels](./examples/rev_align_tips.png "Reverse Aligned Tip Labels")
@@ -252,7 +252,7 @@ ax.set_xlim(-1, 20)
 # ylim is set explicitly before drawing the plot
 ax.set_ylim(-1, 10)
 
-results = plot_tree.plot_tree("examples/primates.nw", ax, branch_lengths=False)
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, branch_lengths=False)
 
 # Save the tree - matplotlib
 plt.savefig("examples/nobranchlengths.png", bbox_inches='tight')
@@ -269,7 +269,7 @@ ax.set_xlim(-1, 20)
 # ylim is set explicitly before drawing the plot
 ax.set_ylim(-1, 10)
 
-results = plot_tree.plot_tree("examples/primates.nw", ax, branch_lengths=False, align_tips=True)
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, branch_lengths=False, align_tips=True)
 
 # Save the tree - matplotlib
 plt.savefig("examples/nobranchlengths_ali.png", bbox_inches='tight')
@@ -293,7 +293,7 @@ With `reverse=True`:
 ```
 f = plt.figure(figsize=(8, 10))
 ax = plt.subplot()
-results = plot_tree.plot_tree("examples/primates.nw", ax, reverse=True)
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, reverse=True)
 plt.savefig("examples/reversed.png", bbox_inches='tight')
 ```
 
@@ -308,7 +308,7 @@ With `col_dict={'Macaca mulatta': 'orange, 'Gorilla gorilla': 'blue'}`:
 ```
 f = plt.figure(figsize=(8, 10))
 ax = plt.subplot()
-results = plot_tree.plot_tree("examples/primates.nw", ax, col_dict={'Macaca mulatta': 'orange', 'Gorilla gorilla': 'blue'})
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, col_dict={'Macaca mulatta': 'orange', 'Gorilla gorilla': 'blue'})
 plt.savefig("examples/colours.png", bbox_inches='tight')
 ```
 
@@ -325,7 +325,7 @@ With `label_dict={'Macaca mulatta': 'Rhesus macaque, 'Homo sapiens': 'human'}`:
 ```
 f = plt.figure(figsize=(8, 10))
 ax = plt.subplot()
-results = plot_tree.plot_tree("examples/primates.nw", ax, label_dict={'Macaca mulatta': 'Rhesus macaque', 'Homo sapiens': 'human'},
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, label_dict={'Macaca mulatta': 'Rhesus macaque', 'Homo sapiens': 'human'},
 col_dict={'Macaca mulatta': 'orange', 'Homo sapiens': 'blue'})
 plt.savefig("examples/labels.png", bbox_inches='tight')
 ```
@@ -346,7 +346,7 @@ plt.savefig("examples/labels.png", bbox_inches='tight')
 	Line width.
 
 ## Detailed Example
-This detailed example shows how `plot_tree` can be combined with matplotlib and basic Python to draw complex plots.
+This detailed example shows how `plot_phylo` can be combined with matplotlib and basic Python to draw complex plots.
 
 ```
 # Build the blank figure
@@ -363,19 +363,19 @@ colours = {'Gorilla gorilla': '#e21c0c', 'Pan troglodytes': '#0c57e2', 'Saimiri 
            'Chiropotes satanas': '#dc9d0c'}
 
 # Draw the left tree
-results_left = plot_tree.plot_tree("primates.nw",
-                                   ax, xpos=5, ypos=ypos_val, width=15,
-                                   show_axis=False, show_support=False,
-                                   font_size=16, col_dict=colours,
-                                   rev_align_tips=True)
+results_left = plot_phylo.plot_phylo("primates.nw",
+                                      ax, xpos=5, ypos=ypos_val, width=15,
+                                      show_axis=False, show_support=False,
+                                      font_size=16, col_dict=colours,
+                                      rev_align_tips=True)
 
 # Draw the right tree
-results_right = plot_tree.plot_tree("primates_mixed.nw",
-                                    ax, xpos=105, ypos=10, width=15,
-                                    show_axis=False, show_support=False,
-                                    reverse=True,
-                                    font_size=16, col_dict=colours,
-                                    rev_align_tips=True)
+results_right = plot_phylo.plot_phylo("primates_mixed.nw",
+                                       ax, xpos=105, ypos=10, width=15,
+                                       show_axis=False, show_support=False,
+                                       reverse=True,
+                                       font_size=16, col_dict=colours,
+                                       rev_align_tips=True)
 
 # Using matplotlib and basic Python functionality on the returned dictionaries from hereforward
 

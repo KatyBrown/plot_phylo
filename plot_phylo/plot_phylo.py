@@ -2,24 +2,24 @@
 import ete3
 
 
-def plot_tree(tree, ax,
-              xpos=0,
-              ypos=0,
-              width=10,
-              height=10,
-              show_axis=False,
-              show_support=True,
-              align_tips=False,
-              rev_align_tips=False,
-              branch_lengths=True,
-              scale_bar=True,
-              scale_bar_width=None,
-              reverse=False,
-              col_dict={},
-              label_dict={},
-              font_size=10,
-              line_col='black',
-              line_width=1):
+def plot_phylo(tree, ax,
+               xpos=0,
+               ypos=0,
+               width=10,
+               height=10,
+               show_axis=False,
+               show_support=True,
+               align_tips=False,
+               rev_align_tips=False,
+               branch_lengths=True,
+               scale_bar=True,
+               scale_bar_width=None,
+               reverse=False,
+               col_dict={},
+               label_dict={},
+               font_size=10,
+               line_col='black',
+               line_width=1):
     '''
     Parameters
     ----------
