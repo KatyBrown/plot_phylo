@@ -16,6 +16,7 @@ The tree used in these examples is from the [10K trees](https://10ktrees.nunn-la
 
 ## Installation
 The module can be installed using pip
+
 `pip install plot_phylo`
 
 You can also download the latest release [here](https://github.com/KatyBrown/plot_phylo/releases/latest)
