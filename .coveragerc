@@ -1,0 +1,10 @@
+[run]
+source = plot_phylo
+omit = tests/*, build/*, dist/*, */__init__.py, */_version.py
+usedevelop = true
+
+[report]
+show_missing = True
+
+[html]
+directory = htmlcov
