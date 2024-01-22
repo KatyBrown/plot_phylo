@@ -90,8 +90,14 @@ def plot_phylo(tree, ax,
         alignment lines (if aligned). All are in the same order.
     '''
     # Read the tree
-    T = ete3.Tree(tree)
-
+    try:
+        T = ete3.Tree(tree)
+    except ete3.parser.newick.NewickError:
+        try:
+            # Allows for trees with named internal nodes
+            T = ete3.Tree(tree, format=1)
+        except ete3.parser.newick.NewickError as e:
+            raise RuntimeError(f"Error in parsing Newick format: {e}")
     # Define dictionaries for colours and labels if not provided
     for nam in T.get_leaf_names():
         if nam not in label_dict:
