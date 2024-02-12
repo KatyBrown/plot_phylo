@@ -15,6 +15,7 @@ def plot_phylo(tree, ax,
                scale_bar=True,
                scale_bar_width=None,
                reverse=False,
+               outgroup=None,
                col_dict={},
                label_dict={},
                font_size=10,
@@ -61,6 +62,9 @@ def plot_phylo(tree, ax,
     reverse: bool
         If True, reverse the tree on the y-axis, showing the root on the right
         hand side. Default False.
+    outgroup: str
+        Leaf to use as an outgroup, must be identical to the name of the
+        leaf in the tree file.
     col_dict : dict
         User provided dictionary with tip labels as keys and colours
         (in any format accepted by matplotlib
@@ -98,6 +102,8 @@ def plot_phylo(tree, ax,
             T = ete3.Tree(tree, format=1)
         except ete3.parser.newick.NewickError as e:
             raise RuntimeError(f"Error in parsing Newick format: {e}")
+    if outgroup:
+        T.set_outgroup(outgroup)
     # Define dictionaries for colours and labels if not provided
     for nam in T.get_leaf_names():
         if nam not in label_dict:

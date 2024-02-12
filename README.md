@@ -310,6 +310,10 @@ plt.savefig("examples/reversed.png", bbox_inches='tight')
 
 ![Mirrored Tree](./examples/reversed.png "Mirrored Tree")
 
+* **outgroup** (`str`, Default None)
+
+  	Specifies a leaf to set as the outgroup, must be identical to the name in the tree file.
+
 * **`col_dict`** (`dict`, Default {})
 
 	User provided dictionary with tip labels as keys and colours (in any [format accepted by matplotlib](https://matplotlib.org/stable/users/explain/colors/colors.html) as values. If this is not specified all labels will be black, if only some labels are specified all others will be black.
