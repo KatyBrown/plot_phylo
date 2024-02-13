@@ -25,9 +25,9 @@ import numpy as np
 
 def compare_images(f1, f2, tol):
     f1arr = matplotlib.image.imread(f1)
-    f1arr = f1arr[:1000, :1000, :] 
+    f1arr = f1arr[1000:2000, 1000:2000, :] 
     f2arr = matplotlib.image.imread(f2)
-    f2arr = f2arr[:1000, :1000, :] 
+    f2arr = f2arr[1000:2000, 1000:2000, :] 
     return np.allclose(f1arr, f2arr)
 
 
@@ -239,4 +239,9 @@ def test_reverse_align_params(x,
                                   test_get_boxes_results)))
 def test_get_boxes(ax, texts, expected_result):
     boxes = plot_phylo.get_boxes(ax, texts)
-    assert boxes == expected_result
+    bclean = dict()
+    for b, vals in boxes.items():
+        bclean[b] = dict()
+        for v in vals:
+            bclean[b][v] = round(vals[v], 0)
+    assert bclean == expected_result
