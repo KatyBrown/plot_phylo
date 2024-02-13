@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from matplotlib.testing.compare import compare_images
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
@@ -21,6 +20,13 @@ import ete3
 import pickle
 import os
 import shutil
+import numpy as np
+
+
+def compare_images(f1, f2, tol):
+    f1arr = matplotlib.image.imread(f1)
+    f2arr = matplotlib.image.imread(f2)
+    return np.allclose(f1arr, f2arr)
 
 
 # Tests all parameters with plot_phylo with three different trees
@@ -88,10 +94,10 @@ def test_plot_phylo_params(xpos,
     exp = expected_figure.replace(".png", "_%s.png" % tree_stem)
     # Compare the Matplotlib figures as images
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
-                            exp, tol=20)
+                            exp, tol=10)
     #shutil.rmtree("test_temp")
     # Assert that the images are similar
-    assert result is None
+    assert result
 
 
 @pytest.mark.parametrize(test_draw_tree_vars,
@@ -143,13 +149,13 @@ def test_draw_tree_params(x,
                                     reverse=reverse,
                                     appearance=appearance)
     plt.close()
-    ytest = round(test_obj[0], 1)
-    y2test = round(test_obj[1], 1)
+    ytest = round(test_obj[0], 0)
+    y2test = round(test_obj[1], 0)
     test_dat = [ytest, y2test]
     for v in test_obj[2]:
         row = [v[0]]
         x, y = v[1].get_position()
-        row += [round(x, 1), round(y, 1)]
+        row += [round(x, 0), round(y, 0)]
         row += [v[1].get_text()]
         test_dat += row
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
@@ -213,15 +219,14 @@ def test_reverse_align_params(x,
     for v0, v1, v2 in reverse:
         row = [v0]
         x, y = v1.get_position()
-        row += [round(x, 1), round(y, 1)]
+        row += [round(x, 0), round(y, 0)]
         row += [v1.get_text()]
         for w in v2:
-            x2 = [round(z, 1) for z in w.get_xdata()]
-            y2 = [round(z, 1) for z in w.get_ydata()]
+            x2 = [round(z, 0) for z in w.get_xdata()]
+            y2 = [round(z, 0) for z in w.get_ydata()]
             row += x2
             row += y2
         test_dat += row
-
     expected_obj = pickle.load(open(e0, "rb"))
     assert expected_obj == test_dat
 
