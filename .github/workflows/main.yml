@@ -33,6 +33,20 @@ jobs:
           pip install pytest
           pip3 install -e .
 
+      - name: Install xvfb (for Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Set up virtual display (for Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run python -m pytest tests/*
+
+      - name: Run tests (for macOS and Windows)
+        if: runner.os != 'Linux'
+        run: pytest tests/*
+
       - name: Test with PyTest
         run: |
           ls -R
