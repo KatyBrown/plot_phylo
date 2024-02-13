@@ -35,4 +35,5 @@ jobs:
 
       - name: Test with PyTest
         run: |
-          pytest ../tests/*
+          ls -R
+          pytest
