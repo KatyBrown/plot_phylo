@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from matplotlib.testing.compare import compare_images
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 import plot_phylo
 import pytest
 from test_plot_phylo_data import (test_plot_phylo_vars,
@@ -86,7 +88,7 @@ def test_plot_phylo_params(xpos,
     # Compare the Matplotlib figures as images
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
                             exp, tol=10)
-    #shutil.rmtree("test_temp")
+    shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result is None
 
