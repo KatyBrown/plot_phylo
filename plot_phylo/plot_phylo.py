@@ -478,7 +478,7 @@ def reverse_align(ax, ps, reverse):
     for pnam, ptext, pline in ps:
         # Get the data units of the box which encloses the text
         box = ax.transData.inverted().transform(
-            ptext.get_window_extent())
+            ptext.get_window_extent(renderer=ax.figure.canvas.get_renderer()))
         # Get the rightmost point of the text box (regular tree)
         # or the leftmost (reversed tree)
         x_extreme = box[indi][0]
