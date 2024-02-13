@@ -41,13 +41,8 @@ jobs:
 
       - name: Set up virtual display (for Linux)
         if: runner.os == 'Linux'
-        run: xvfb-run python -m pytest tests/*
+        run: xvfb-run python -m pytest
 
       - name: Run tests (for macOS and Windows)
         if: runner.os != 'Linux'
-        run: pytest tests/*
-
-      - name: Test with PyTest
-        run: |
-          ls -R
-          pytest
+        run: pytest
