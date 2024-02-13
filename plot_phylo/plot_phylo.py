@@ -203,7 +203,8 @@ def get_boxes(ax, texts):
     for i, txt in enumerate(texts):
         # Get the position of the boxes containing the labels, convert to axis
         # units
-        box = ax.transData.inverted().transform(txt.get_window_extent())
+        box = ax.transData.inverted().transform(txt.get_window_extent(
+            ax.figure.canvas.get_renderer()))
         nam = txt.get_text().strip()
         # Build the dictionary
         boxpos[nam] = dict()
