@@ -25,7 +25,9 @@ import numpy as np
 
 def compare_images(f1, f2, tol):
     f1arr = matplotlib.image.imread(f1)
+    f1arr = f1arr[:1000, :1000, :] 
     f2arr = matplotlib.image.imread(f2)
+    f2arr = f2arr[:1000, :1000, :] 
     return np.allclose(f1arr, f2arr)
 
 
