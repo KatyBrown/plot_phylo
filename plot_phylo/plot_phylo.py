@@ -507,7 +507,8 @@ def reverse_align(ax, ps, reverse):
         p[1].set_horizontalalignment(alis[indi])
 
         # Get the updated text position limits
-        pbox = ax.transData.inverted().transform(p[1].get_window_extent())
+        pbox = ax.transData.inverted().transform(p[1].get_window_extent(
+            renderer=ax.figure.canvas.get_renderer()))
 
         # Move the dotted line to hit the new text position
         # int(not indi) swaps 0 for 1
