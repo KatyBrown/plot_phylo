@@ -359,6 +359,20 @@ plt.savefig("examples/labels.png", bbox_inches='tight')
 * **`line_width`** (`float`, Default 2)
 
 	Line width.
+	
+* **`bold`** (`list`, Default `[]`)
+
+	A list of sequence names to show in bold. If sequences are renamed using `label_dict`, provide the original names.
+
+With `bold=['Homo sapiens']`:
+```
+f = plt.figure(figsize=(8, 10))
+ax = plt.subplot()
+results = plot_phylo.plot_phylo("%s/examples/primates.nw" % path, ax, bold=['Homo sapiens'])
+plt.savefig("examples/bold.png", bbox_inches='tight')
+```
+  
+![Bold](./examples/bold.png "Bold")
 
 ## Detailed Example
 This detailed example shows how `plot_phylo` can be combined with matplotlib and basic Python to draw complex plots.
