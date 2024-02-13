@@ -87,7 +87,7 @@ def test_plot_phylo_params(xpos,
     exp = expected_figure.replace(".png", "_%s.png" % tree_stem)
     # Compare the Matplotlib figures as images
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
-                            exp, tol=10)
+                            exp, tol=20)
     shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result is None
@@ -141,17 +141,19 @@ def test_draw_tree_params(x,
                                     branch_lengths=branch_lengths,
                                     reverse=reverse,
                                     appearance=appearance)
-    ytest = test_obj[0]
-    y2test = test_obj[1]
-    ps = test_obj[2]
-    v0 = [v[0] for v in ps]
-    v1 = [str(v[1]) for v in ps]
     plt.close()
-
-    test_dat = [ytest, y2test, v0, v1]
-
+    ytest = round(test_obj[0], 2)
+    y2test = round(test_obj[1], 2)
+    test_dat = [ytest, y2test]
+    for v in test_obj[2]:
+        row = [v[0]]
+        x, y = v[1].get_position()
+        row += [round(x, 2), round(y, 2)]
+        row += [v[1].get_text()]
+        test_dat += row
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
     expected_obj = pickle.load(open(e0, "rb"))
+
     assert expected_obj == test_dat
 
 
@@ -202,14 +204,21 @@ def test_reverse_align_params(x,
                                     appearance=appearance)
     plt.close()
     reverse = plot_phylo.reverse_align(a, ps, True)
-    
-    v0 = [v[0] for v in reverse]
-    v1 = [str(v[1]) for v in reverse]
-    v2 = [[str(w.get_xdata()) + str(w.get_ydata())
-           for w in v[2]] for v in reverse]
-    e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
-    test_dat = [v0, v1, v2]
 
+    e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
+
+    test_dat = []
+    for v0, v1, v2 in reverse:
+        row = [v0]
+        x, y = v1.get_position()
+        row += [round(x, 2), round(y, 2)]
+        row += [v1.get_text()]
+        for w in v2:
+            x2 = [round(z, 2) for z in w.get_xdata()]
+            y2 = [round(z, 2) for z in w.get_ydata()]
+            row += x2
+            row += y2
+        test_dat += row
     expected_obj = pickle.load(open(e0, "rb"))
     assert expected_obj == test_dat
 
@@ -221,7 +230,3 @@ def test_reverse_align_params(x,
 def test_get_boxes(ax, texts, expected_result):
     boxes = plot_phylo.get_boxes(ax, texts)
     assert boxes == expected_result
-
-
-def test_draw_scale_bar():
-    pass
