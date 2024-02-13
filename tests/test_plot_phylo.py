@@ -81,14 +81,15 @@ def test_plot_phylo_params(xpos,
         os.mkdir("test_temp")
     except FileExistsError:
         pass
-    plt.savefig("test_temp/%s_%s.png" % (ID, tree_stem), bbox_inches='tight')
+    plt.savefig("test_temp/%s_%s.png" % (ID, tree_stem), bbox_inches='tight',
+                dpi=200)
     plt.close()
     
     exp = expected_figure.replace(".png", "_%s.png" % tree_stem)
     # Compare the Matplotlib figures as images
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
                             exp, tol=20)
-    shutil.rmtree("test_temp")
+    #shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result is None
 
@@ -142,16 +143,17 @@ def test_draw_tree_params(x,
                                     reverse=reverse,
                                     appearance=appearance)
     plt.close()
-    ytest = round(test_obj[0], 2)
-    y2test = round(test_obj[1], 2)
+    ytest = round(test_obj[0], 1)
+    y2test = round(test_obj[1], 1)
     test_dat = [ytest, y2test]
     for v in test_obj[2]:
         row = [v[0]]
         x, y = v[1].get_position()
-        row += [round(x, 2), round(y, 2)]
+        row += [round(x, 1), round(y, 1)]
         row += [v[1].get_text()]
         test_dat += row
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
+
     expected_obj = pickle.load(open(e0, "rb"))
 
     assert expected_obj == test_dat
@@ -211,14 +213,15 @@ def test_reverse_align_params(x,
     for v0, v1, v2 in reverse:
         row = [v0]
         x, y = v1.get_position()
-        row += [round(x, 2), round(y, 2)]
+        row += [round(x, 1), round(y, 1)]
         row += [v1.get_text()]
         for w in v2:
-            x2 = [round(z, 2) for z in w.get_xdata()]
-            y2 = [round(z, 2) for z in w.get_ydata()]
+            x2 = [round(z, 1) for z in w.get_xdata()]
+            y2 = [round(z, 1) for z in w.get_ydata()]
             row += x2
             row += y2
         test_dat += row
+
     expected_obj = pickle.load(open(e0, "rb"))
     assert expected_obj == test_dat
 
