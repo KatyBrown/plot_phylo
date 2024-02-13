@@ -20,7 +20,8 @@ def plot_phylo(tree, ax,
                label_dict={},
                font_size=10,
                line_col='black',
-               line_width=1):
+               line_width=1,
+               bold=[]):
     '''
     Parameters
     ----------
@@ -85,6 +86,8 @@ def plot_phylo(tree, ax,
         Default is black.
     line_width : float
         Line width. Default 2.
+    bold: list
+        List of tip labels to show in bold.
 
 
     Returns
@@ -102,8 +105,9 @@ def plot_phylo(tree, ax,
             T = ete3.Tree(tree, format=1)
         except ete3.parser.newick.NewickError as e:
             raise RuntimeError(f"Error in parsing Newick format: {e}")
-    if outgroup:
+    if outgroup and outgroup in set(T.get_leaf_names()):
         T.set_outgroup(outgroup)
+
     # Define dictionaries for colours and labels if not provided
     for nam in T.get_leaf_names():
         if nam not in label_dict:
@@ -116,7 +120,8 @@ def plot_phylo(tree, ax,
                   'line_width': line_width,
                   'col_dict': col_dict,
                   'label_dict': label_dict,
-                  'show_support': show_support}
+                  'show_support': show_support,
+                  'bold': bold}
 
     # Calculate the total height and width of the original tree
     # in terms of number of nodes, total branch length, number of tips
@@ -326,11 +331,15 @@ def draw_tree(tree, ax,
         else:
             hali = 'left'
         # Plot the tip label
+        if tree.name in appearance['bold']:
+            bold = 'bold'
+        else:
+            bold = 'normal'
         textpos = ax.text(x_text_pos, -y,
                           "  %s  " % appearance['label_dict'][tree.name],
                           color=appearance['col_dict'][tree.name],
                           fontsize=appearance['font_size'],
-                          va='center', ha=hali)
+                          va='center', ha=hali, fontweight=bold)
 
         # Plot the branch to the tip
         ax.plot([x, x_tip_pos], [-y, -y],
