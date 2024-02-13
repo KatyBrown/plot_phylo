@@ -37,12 +37,14 @@ tests_plot_phylo = [{},
                     {'scale_bar': False},
                     {'scale_bar_width': 6},
                     {'reverse': True},
+                    {'outgroup': 'Homo sapiens'},
                     {'rev_align_tips': True, 'reverse': True},
                     {'col_dict': {'Homo sapiens': 'blue'}},
                     {'label_dict': {'Homo sapiens': 'human'}},
                     {'font_size': 20},
                     {'line_col': 'orange'},
-                    {'line_width': 5}]
+                    {'line_width': 5},
+                    {'bold': ['Homo sapiens']}]
 
 tests_draw_tree = [{},
                   {'xpos': 1, 'ypos': 1},
@@ -59,7 +61,8 @@ tests_draw_tree = [{},
                                   'font_size': 20,
                                   'line_col': 'orange',
                                   'line_width': 5,
-                                  'show_support': True}},
+                                  'show_support': True,
+                                  'bold': ['Homo sapiens']}},
                   {'depth': [2, 2, 2]}]
 
 test_plot_phylo_list = []
@@ -88,7 +91,7 @@ for test in tests_draw_tree:
     curr_dict['ps'] = []
     curr_dict['appearance'] = dict()
     for var in ['col_dict', 'label_dict', 'font_size',
-                'line_col', 'line_width', 'show_support']:
+                'line_col', 'line_width', 'show_support', 'bold']:
         curr_dict['appearance'][var] = curr_dict[var]
     curr_dict['depth'] = [5, 5, 5]
     curr_dict.update(test)
@@ -111,7 +114,7 @@ for test in tests_draw_tree:
         curr_dict['y'] = curr_dict['ypos']
         curr_dict['appearance'] = dict()
         for var in ['col_dict', 'label_dict', 'font_size',
-                    'line_col', 'line_width', 'show_support']:
+                    'line_col', 'line_width', 'show_support', 'bold']:
             curr_dict['appearance'][var] = curr_dict[var]
         curr_dict.update(test)
         curr_dict['depth'] = [5, 5, 5]

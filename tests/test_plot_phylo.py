@@ -39,11 +39,13 @@ def test_plot_phylo_params(xpos,
                            scale_bar,
                            scale_bar_width,
                            reverse,
+                           outgroup,
                            col_dict,
                            label_dict,
                            font_size,
                            line_col,
                            line_width,
+                           bold,
                            expected_figure,
                            ID, tree, ylim):
     
@@ -66,12 +68,17 @@ def test_plot_phylo_params(xpos,
                           scale_bar=scale_bar,
                           scale_bar_width=scale_bar_width,
                           reverse=reverse,
+                          outgroup=outgroup,
                           col_dict=col_dict,
                           label_dict=label_dict,
                           font_size=font_size,
                           line_col=line_col,
-                          line_width=line_width)
-    os.mkdir("test_temp")
+                          line_width=line_width,
+                          bold=bold)
+    try:
+        os.mkdir("test_temp")
+    except FileExistsError:
+        pass
     plt.savefig("test_temp/%s_%s.png" % (ID, tree_stem), bbox_inches='tight')
     plt.close()
     
@@ -79,7 +86,7 @@ def test_plot_phylo_params(xpos,
     # Compare the Matplotlib figures as images
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
                             exp, tol=10)
-    shutil.rmtree("test_temp")
+    #shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result is None
 
@@ -140,6 +147,7 @@ def test_draw_tree_params(x,
     plt.close()
 
     test_dat = [ytest, y2test, v0, v1]
+
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
     expected_obj = pickle.load(open(e0, "rb"))
     assert expected_obj == test_dat
@@ -199,6 +207,7 @@ def test_reverse_align_params(x,
            for w in v[2]] for v in reverse]
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
     test_dat = [v0, v1, v2]
+
     expected_obj = pickle.load(open(e0, "rb"))
     assert expected_obj == test_dat
 
