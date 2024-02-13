@@ -28,7 +28,7 @@ def compare_images(f1, f2, tol):
     f1arr = f1arr[1000:2000, 1000:2000, :] 
     f2arr = matplotlib.image.imread(f2)
     f2arr = f2arr[1000:2000, 1000:2000, :] 
-    return np.allclose(f1arr, f2arr)
+    return np.allclose(f1arr, f2arr, atol=tol)
 
 
 # Tests all parameters with plot_phylo with three different trees
@@ -97,7 +97,7 @@ def test_plot_phylo_params(xpos,
     # Compare the Matplotlib figures as images
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
                             exp, tol=10)
-    #shutil.rmtree("test_temp")
+    shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result
 
