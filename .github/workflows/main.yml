@@ -30,6 +30,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
+	  pip install -r requirements-test.txt
           pip install pytest
           pip3 install -e .
 
@@ -41,7 +42,7 @@ jobs:
 
       - name: Run tests (for Linux)
         if: runner.os == 'Linux'
-        run: xvfb-run python -m pytest
+        run: xvfb-run pytest
 
       - name: Run tests (for macOS and Windows)
         if: runner.os != 'Linux'
