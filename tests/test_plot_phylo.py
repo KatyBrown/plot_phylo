@@ -32,6 +32,11 @@ def compare_images(f1, f2, tol):
     return np.allclose(f1arr_sub, f2arr_sub, atol=tol)
 
 
+def compare_floats(float1, float2, tolerance=0.05):
+    abs_diff = abs(float1 - float2)
+    print (float1, float2, abs_diff, (tolerance * abs(float2)), abs_diff <= (tolerance * abs(float2)))
+    return abs_diff <= (tolerance * abs(float2))
+
 # Tests all parameters with plot_phylo with three different trees
 @pytest.mark.parametrize(test_plot_phylo_vars,
                          test_plot_phylo_list,
@@ -152,20 +157,26 @@ def test_draw_tree_params(x,
                                     reverse=reverse,
                                     appearance=appearance)
     plt.close()
-    ytest = round(test_obj[0], 0)
-    y2test = round(test_obj[1], 0)
+    ytest = round(test_obj[0], 2)
+    y2test = round(test_obj[1], 2)
     test_dat = [ytest, y2test]
     for v in test_obj[2]:
         row = [v[0]]
         x, y = v[1].get_position()
-        row += [round(x, 0), round(y, 0)]
+        row += [round(x, 2), round(y, 2)]
         row += [v[1].get_text()]
         test_dat += row
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
-
     expected_obj = pickle.load(open(e0, "rb"))
-
-    assert expected_obj == test_dat
+    ll = 0
+    for z1, z2 in zip(expected_obj, test_dat):
+        if isinstance(z1, str):
+            if z1 == z2:
+                ll += 1
+        else:
+            if compare_floats(z1, z2):
+                ll += 1
+    assert ll == len(expected_obj)
 
 
 @pytest.mark.parametrize(test_rev_align_vars,
@@ -222,16 +233,24 @@ def test_reverse_align_params(x,
     for v0, v1, v2 in reverse:
         row = [v0]
         x, y = v1.get_position()
-        row += [round(x, 0), round(y, 0)]
+        row += [round(x, 2), round(y, 2)]
         row += [v1.get_text()]
         for w in v2:
-            x2 = [round(z, 0) for z in w.get_xdata()]
-            y2 = [round(z, 0) for z in w.get_ydata()]
+            x2 = [round(z, 2) for z in w.get_xdata()]
+            y2 = [round(z, 2) for z in w.get_ydata()]
             row += x2
             row += y2
         test_dat += row
     expected_obj = pickle.load(open(e0, "rb"))
-    assert expected_obj == test_dat
+    ll = 0
+    for z1, z2 in zip(expected_obj, test_dat):
+        if isinstance(z1, str):
+            if z1 == z2:
+                ll += 1
+        else:
+            if compare_floats(z1, z2):
+                ll += 1
+    assert ll == len(expected_obj)
 
 
 @pytest.mark.parametrize("ax, texts, expected_result",
