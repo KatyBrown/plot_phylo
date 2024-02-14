@@ -25,9 +25,12 @@ import numpy as np
 
 def compare_images(f1, f2, tol):
     f1arr = matplotlib.image.imread(f1)
-    f1arr = f1arr[1000:2000, 1000:2000, :] 
     f2arr = matplotlib.image.imread(f2)
-    f2arr = f2arr[1000:2000, 1000:2000, :] 
+    
+    ns1 = np.shape(f1arr)
+    f1arr = f1arr[100:min(2000, ns1[0]-100), 100:min(2000, ns1[1]-100), :]
+    ns2 = np.shape(f2arr)
+    f2arr = f2arr[100:min(2000, ns2[0]-100), 100:min(2000, ns2[1]-100), :]
     return np.allclose(f1arr, f2arr, atol=tol)
 
 
