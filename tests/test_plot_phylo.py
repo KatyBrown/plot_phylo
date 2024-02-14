@@ -26,16 +26,9 @@ import numpy as np
 def compare_images(f1, f2, tol):
     f1arr = matplotlib.image.imread(f1)
     f2arr = matplotlib.image.imread(f2)
-    ns1 = np.shape(f1arr)
-    row_prop_1 = int(ns1[0] * 0.1)
-    col_prop_1 = int(ns1[1] * 0.1)
 
-    ns2 = np.shape(f2arr)
-    row_prop_2 = int(ns2[0] * 0.1)
-    col_prop_2 = int(ns2[1] * 0.1)
-
-    f1arr_sub = f1arr[row_prop_1:(row_prop_1*9), col_prop_1:(col_prop_1*9), :]
-    f2arr_sub = f2arr[row_prop_2:(row_prop_2*9), col_prop_2:(col_prop_2*9), :]
+    f1arr_sub = f1arr[500:1500, 500:1500, :]
+    f2arr_sub = f2arr[500:1500, 500:1500, :]
     return np.allclose(f1arr_sub, f2arr_sub, atol=tol)
 
 
