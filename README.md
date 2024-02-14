@@ -1,3 +1,5 @@
+![example workflow](https://github.com/KatyBrown/plot_phylo/actions/workflows/main.yml/badge.svg)
+
 # plot_phylo
 
 ![Illustration](./examples/layered.png "Illustration")
