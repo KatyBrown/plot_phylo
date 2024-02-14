@@ -27,10 +27,16 @@ def compare_images(f1, f2, tol):
     f1arr = matplotlib.image.imread(f1)
     f2arr = matplotlib.image.imread(f2)
     ns1 = np.shape(f1arr)
-    f1arr = f1arr[100:min(2000, (ns1[1]-100)), 100:min(2000, (ns1[0]-100)), :]
+    row_prop_1 = int(ns1[0] * 0.1)
+    col_prop_1 = int(ns1[1] * 0.1)
+
     ns2 = np.shape(f2arr)
-    f2arr = f2arr[100:min(2000, (ns2[1]-100)), 100:min(2000, (ns2[0]-100)), :]
-    return np.allclose(f1arr, f2arr, atol=tol)
+    row_prop_2 = int(ns2[0] * 0.1)
+    col_prop_2 = int(ns2[1] * 0.1)
+
+    f1arr_sub = f1arr[row_prop_1:(row_prop_1*9), col_prop_1:(col_prop_1*9), :]
+    f2arr_sub = f2arr[row_prop_2:(row_prop_2*9), col_prop_2:(col_prop_2*9), :]
+    return np.allclose(f1arr_sub, f2arr_sub, atol=tol)
 
 
 # Tests all parameters with plot_phylo with three different trees
