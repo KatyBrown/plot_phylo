@@ -192,7 +192,7 @@ def test_reverse_align_params(x,
 
     f = plt.figure(figsize=(10, 20))
     a = f.add_subplot(111)
-    a.set_xlim(-10, 20)
+    a.set_xlim(-10, 19)
     a.set_ylim(-1, ylim)
     for nam in T.get_leaf_names():
         if nam not in appearance['label_dict']:
