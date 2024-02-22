@@ -28,4 +28,4 @@ Please review our Code of Conduct before participating. Be kind and respectful t
 
 ## License
 
-By contributing to ploy_phylo, you agree that your contributions will be licensed under the MIT License.
+By contributing to plot_phylo, you agree that your contributions will be licensed under the MIT License.
