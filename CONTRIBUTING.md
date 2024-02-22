@@ -17,7 +17,7 @@ If contributing to plot_phylo, please ensure that you
 * Edit function docstrings to include any new variables and include docstrings in the same style for any new functions.
 * Add comments to describe how your code works.
 * Edit the unit tests to include any new functionality.
-* Run unit tests in the root directoy as `pytest --cov=plot_phylo` then view the coverage html and ensure that they pass and that module file coverage is 100%.
+* Run unit tests in the root directoy as `pytest --cov=plot_phylo` and ensure that they pass and that coverage is 100%.
 * Check the code is pep8 compliant.
 
 If you're unsure about any of these steps, please raise an issue and I can help you.
