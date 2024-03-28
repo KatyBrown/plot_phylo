@@ -30,3 +30,8 @@ sphinx:
 python:
   install:
     - requirements: man/requirements.txt
+
+steps:
+  - command: |
+      pip install -r man/requirements.txt
+      sphinx-build -b html man/_build man

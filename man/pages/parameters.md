@@ -1,7 +1,6 @@
-# Parameters
+# Usage and Parameters
 
 Detailed descriptions of all parameters are provided below.
-
 
 *Required*
 
@@ -33,11 +32,59 @@ Detailed descriptions of all parameters are provided below.
 * [line_width](#line-width) - set line width
 * [bold](#bold) - highlight tip labels in bold
 
+The primate tree used in these examples is from the [10K trees](https://10ktrees.nunn-lab.org/) project and is illustrative only.
+
+
+
 ## Required
 ### `tree`
 (`str`, Required)
 
 Either the path to a newick formatted tree or a string containing a newick formatted tree. 
+
+e.g. 
+A string containing a newick formatted tree
+
+```
+# Store the newick data as a string
+tree = "((A:0.1,B:0.2)0.5,C:0.3)0.95:0.1;"
+
+# Generate a matplotlib figure
+f = plt.figure(figsize=(5, 5))
+
+# Add an axis
+ax = plt.subplot()
+
+# Set the axis limits
+ax.set_xlim(-1, 15)
+ax.set_ylim(-5, 11)
+
+# Visualise the tree
+results = plot_phylo.plot_phylo(tree, ax)
+
+# Save the image
+f.savefig("examples/from_string.png", bbox_inches='tight')
+
+```
+![from_string](examples/from_string.png)
+
+A file containing a newick formatted tree, such as [primates.nw](examples/primates.nw).
+
+```
+# Generate a matplotlib figure
+f = plt.figure(figsize=(8, 10))
+
+# Add an axis
+ax = plt.subplot()
+
+# Plot the tree on this axis, `examples/primates.nw` is the path to the tree
+results = plot_phylo.plot_phylo("examples/primates.nw", ax)
+
+# Save the image
+plt.savefig("examples/basic_plot.png", bbox_inches='tight')
+
+```
+![Basic Tree](./examples/basic_plot.png "Basic Tree")
 
 ### `ax`
 (`matplotlib.axes._axes.Axes`, Required)
