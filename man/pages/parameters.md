@@ -1,5 +1,38 @@
 # Parameters
 
+Detailed descriptions of all parameters are provided below.
+
+
+*Required*
+
+* [tree](#tree) - tree file
+* [ax](#ax) - matplotlib axis
+
+*Positioning the plot on the axis*
+
+* [xpos](#xpos) - x-axis position
+* [ypos](#ypos) - y-axis position
+* [height](#height) - tree height
+* [width](#width) - tree width
+
+*Visualisation options*
+
+* [show_axis](#show-axis) - show x and y axis on plot
+* [show_support](#show-support) - show branch support
+* [align_tips](#align-tips) - left align tip labels
+* [rev_align_tips](#rev-align-tips) - right align tip labels 
+* [branch_lengths](#branch-lengths) - scale branch lengths
+* [scale_bar](#scale-bar) - show scale bar
+* [scale_bar_width](#scale-bar-width) - set scale bar width
+* [reverse](#reverse) - mirror the tree, show root on right side
+* [outgroup](#outgroup) - set the outgroup
+* [col_dict](#col-dict) - set tip label colours
+* [label_dict](#label-dict) - relabel tips
+* [font_size](#font-size) - set font size
+* [line_col](#line-col) - set line colour
+* [line_width](#line-width) - set line width
+* [bold](#bold) - highlight tip labels in bold
+
 ## Required
 ### `tree`
 (`str`, Required)
