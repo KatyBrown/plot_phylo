@@ -125,10 +125,13 @@ def plot_phylo(tree, ax,
 
     # Calculate the total height and width of the original tree
     # in terms of number of nodes, total branch length, number of tips
-    maxdist = ((T.get_farthest_leaf(topology_only=True)[1],
-                T.get_farthest_leaf(topology_only=False)[1],
-                len(T)))
-
+    maxdist = [T.get_farthest_leaf(topology_only=True)[1],
+               T.get_farthest_leaf(topology_only=False)[1],
+               len(T)]
+    if maxdist[1] == 0:
+        maxdist[1] = 1
+    if maxdist[2] == 0:
+        maxdist[2] = 1
     # Without branch lengths the tree has a root which appears at position -1,
     # so shift the tree over by one unit
     if not branch_lengths:
@@ -302,7 +305,6 @@ def draw_tree(tree, ax,
     else:
         td = 1
         tot_width = depth[0] + 1
-
     # This interval is used to scale the interval for each node
     # so the total tree width matches the value specified
     xint = width / tot_width
@@ -316,7 +318,7 @@ def draw_tree(tree, ax,
         # x_text_pos is the position of the text - if the tips are aligned
         # the text is also aligned
         if align_tips or rev_align_tips:
-            x_ali_pos = (tot_width * xint) + x0 + 1
+            x_ali_pos = (tot_width * xint) + x0
             x_text_pos = x_ali_pos
         else:
             x_ali_pos = None
@@ -336,11 +338,15 @@ def draw_tree(tree, ax,
             bold = 'bold'
         else:
             bold = 'normal'
+        if align_tips:
+            vali = 'top'
+        else:
+            vali = 'center'
         textpos = ax.text(x_text_pos, -y,
                           "  %s  " % appearance['label_dict'][tree.name],
                           color=appearance['col_dict'][tree.name],
                           fontsize=appearance['font_size'],
-                          va='center', ha=hali, fontweight=bold)
+                          va=vali, ha=hali, fontweight=bold)
 
         # Plot the branch to the tip
         ax.plot([x, x_tip_pos], [-y, -y],
