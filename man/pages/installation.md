@@ -1,4 +1,4 @@
-## Installation
+# Installation
 
 **Requirements**
 
@@ -6,7 +6,6 @@
 * matplotlib >= 2.1.1
 * ete3 >= 3.1.0
 
-## Installation
 The module can be installed using pip
 
 `pip install plot_phylo`

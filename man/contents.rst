@@ -2,10 +2,9 @@ plot_phylo
 ==========
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
 
    index.md
-   pages/introduction.md
    pages/installation.md
    pages/quickstart.md
    pages/parameters.md
