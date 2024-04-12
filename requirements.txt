@@ -1,2 +1,2 @@
-matplotlib
-ete3
+matplotlib>=2.1.1
+ete3>=3.1.0
