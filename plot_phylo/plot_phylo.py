@@ -9,7 +9,6 @@ def plot_phylo(tree, ax,
                height=10,
                show_axis=False,
                show_support=True,
-               show_node_labels=False,
                align_tips=False,
                rev_align_tips=False,
                branch_lengths=True,
@@ -122,7 +121,6 @@ def plot_phylo(tree, ax,
                   'col_dict': col_dict,
                   'label_dict': label_dict,
                   'show_support': show_support,
-                  'show_node_labels': show_node_labels,
                   'bold': bold}
 
     # Calculate the total height and width of the original tree
@@ -431,24 +429,12 @@ def draw_tree(tree, ax,
         # Add branch support if specified
         # TODO - currently lands on top of the branches if branch_lengths
         # is switched on
-        # addrows parameter moves the branch labels down a little
-        # if the node labels are also shown
         if appearance['show_support']:
             if not reverse:
                 ax.text(x, -ym, " %.2f" % tree.support, ha='left',
                         va='center', fontsize=appearance['font_size']-2)
             else:
                 ax.text(x, -ym, "%.2f " % tree.support, ha='right',
-                        va='center', fontsize=appearance['font_size']-2)
-            addrows = "\n\n"
-        else:
-            addrows = ""
-        if appearance['show_node_labels']:
-            if not reverse:
-                ax.text(x, -ym, "%s %s" % (addrows, tree.name), ha='left',
-                        va='center', fontsize=appearance['font_size']-2)
-            else:
-                ax.text(x, -ym, "%s %s" % (addrows, tree.name), ha='right',
                         va='center', fontsize=appearance['font_size']-2)
 
         return (y, ym, ps)
