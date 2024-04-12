@@ -91,6 +91,27 @@ plt.savefig("examples/basic_plot.png", bbox_inches='tight')
 
 An open matplotlib ax object where the tree will be plotted. Required.
 
+To generate a basic plot with a single subplot:
+```
+import matplotlib.pyplot as plt
+
+# Make an empty figure
+my_figure = plt.figure()
+
+# Add an empty subplot
+my_subplot = my_figure.add_subplot(111)
+```
+
+The object `my_subplot` is then passed to plot phylo and the tree will be plotted onto this axis.
+
+```
+results = plot_phylo.plot_phylo("examples/primates.nw", my_subplot)
+```
+
+More details about using matplotlib via this object oriented interface are available [here](https://www.tutorialspoint.com/matplotlib/matplotlib_object_oriented_interface.htm).
+
+The advantage of this approach is that you can continue to add features to this plot directly using matplotlib or incorporate your phylogeny into an existing plot.
+
 ## Positioning the Plot
 Using the `xpos`, `ypos`, `height` and `width` parameters, the exact location of the tree within the axis can be specified.
 

@@ -13,6 +13,6 @@ This means that:
 2. [Quick Start](pages/quickstart.md)
 3. [Parameters](pages/parameters.md)
 4. [Incorporating Matplotlib Elements](pages/matplotlib.md)
-5. [Functions](functions.rst)
+5. [Functions](pages/functions.html)
 6. [Detailed Example](pages/detailed.md)
 

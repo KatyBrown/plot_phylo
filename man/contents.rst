@@ -9,5 +9,5 @@ plot_phylo
    pages/quickstart.md
    pages/parameters.md
    pages/matplotlib.md
-   functions.md
+   pages/functions.rst
    pages/detailed.md
