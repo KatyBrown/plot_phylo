@@ -68,7 +68,7 @@ f.savefig("examples/from_string.png", bbox_inches='tight')
 ```
 ![from_string](examples/from_string.png)
 
-A file containing a newick formatted tree, such as [primates.nw](examples/primates.nw).
+A file containing a newick formatted tree, such as [primates.nw](https://raw.githubusercontent.com/KatyBrown/plot_phylo/main/examples/primates.nw).
 
 ```
 # Generate a matplotlib figure

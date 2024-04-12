@@ -16,3 +16,4 @@ This means that:
 5. [Functions](pages/functions.html)
 6. [Detailed Example](pages/detailed.md)
 
+The module depends on the [ETE Toolkit](http://etetoolkit.org/), an excellent existing Python framework for analysing and visualising phylogenetic trees, plus the [matplotlib](https://matplotlib.org/) visualisation library.
