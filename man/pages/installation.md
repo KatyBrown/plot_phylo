@@ -14,4 +14,4 @@ You can also download the latest release [here](https://github.com/KatyBrown/plo
 
 Or clone the GitHub repository directly.
 
-`git clone git@github.com:KatyBrown/plot_phylo.git`
+`git clone https://github.com/KatyBrown/plot_phylo.git`
