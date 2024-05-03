@@ -1,7 +1,12 @@
 # Detailed Example
 This detailed example shows how `plot_phylo` can be combined with matplotlib and basic Python to draw complex plots.
 
+To run this example, please execute the code in the root directory for plot_phylo. It will output a single image file, `detailed_example.png`.
+
 ```
+import plot_phylo
+import matplotlib.pyplot as plt
+
 # Build the blank figure
 f = plt.figure(figsize=(15, 10))
 ax = plt.subplot(1, 1, 1)
@@ -16,14 +21,14 @@ colours = {'Gorilla gorilla': '#e21c0c', 'Pan troglodytes': '#0c57e2', 'Saimiri 
            'Chiropotes satanas': '#dc9d0c'}
 
 # Draw the left tree
-results_left = plot_phylo.plot_phylo("primates.nw",
+results_left = plot_phylo.plot_phylo("examples/primates.nw",
                                       ax, xpos=5, ypos=ypos_val, width=15,
                                       show_axis=False, show_support=False,
                                       font_size=16, col_dict=colours,
                                       rev_align_tips=True)
 
 # Draw the right tree
-results_right = plot_phylo.plot_phylo("primates_mixed.nw",
+results_right = plot_phylo.plot_phylo("examples/primates_mixed.nw",
                                        ax, xpos=105, ypos=10, width=15,
                                        show_axis=False, show_support=False,
                                        reverse=True,
@@ -89,7 +94,7 @@ f.text(0.8, 0.85, 'Tree 2', ha='center', fontsize=16, fontweight='bold')
 f.suptitle("Primate Phylogeny", fontsize=24, y=0.92)
 
 # Save
-f.savefig("examples/layered.png", bbox_inches='tight')
+f.savefig("detailed_example.png", bbox_inches='tight')
 ```
 
 ![Detailed Example](./examples/layered.png "Detailed Example")
