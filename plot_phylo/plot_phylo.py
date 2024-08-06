@@ -125,9 +125,11 @@ def plot_phylo(tree, ax,
 
     # Calculate the total height and width of the original tree
     # in terms of number of nodes, total branch length, number of tips
-    maxdist = ((T.get_farthest_leaf(topology_only=True)[1],
-                T.get_farthest_leaf(topology_only=False)[1],
-                len(T)))
+    maxdist = [T.get_farthest_leaf(topology_only=True)[1],
+               T.get_farthest_leaf(topology_only=False)[1],
+               len(T)]
+    if maxdist[1] == 0:
+        maxdist[1] = 1
 
     # Without branch lengths the tree has a root which appears at position -1,
     # so shift the tree over by one unit
@@ -431,8 +433,14 @@ def draw_tree(tree, ax,
         # is switched on
         if appearance['show_support']:
             if not reverse:
-                ax.text(x, -ym, " %.2f" % tree.support, ha='left',
-                        va='center', fontsize=appearance['font_size']-2)
+                if tree.support == 1:
+                    ax.text(x, -ym, " %i" % tree.support, ha='left',
+                            va='center', fontsize=appearance['font_size']-2,
+                            color='#459156')
+                else:                    
+                    ax.text(x, -ym, " %.2f" % tree.support, ha='left',
+                            va='center', fontsize=appearance['font_size']-2,
+                            color='#459156')
             else:
                 ax.text(x, -ym, "%.2f " % tree.support, ha='right',
                         va='center', fontsize=appearance['font_size']-2)
