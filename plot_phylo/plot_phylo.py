@@ -23,7 +23,8 @@ def plot_phylo(tree, ax,
                line_col='black',
                line_width=1,
                bold=[],
-               collapse=[]):
+               collapse=[],
+               collapse_names=[]):
     '''
     Parameters
     ----------
@@ -66,7 +67,8 @@ def plot_phylo(tree, ax,
         If True, reverse the tree on the y-axis, showing the root on the right
         hand side. Default False.
     outgroup: str
-        Leaf to use as an outgroup, must be identical to the name of the
+        Leaf to use as an outgroup, must be identical to the     print (tree)
+name of the
         leaf in the tree file.
     col_dict : dict
         User provided dictionary with tip labels as keys and colours
@@ -112,7 +114,12 @@ def plot_phylo(tree, ax,
         T.set_outgroup(outgroup)
     
     if len(collapse) != 0:
-        T = collapse_nodes(T, collapse)
+        assert len(collapse) == len(collapse_names), "To collapse nodes the \
+            collapse_strings and collapse_names parameters must be lists \
+            of equal length"
+        T, collapseD = collapse_nodes(T, collapse, collapse_names)
+    else:
+        collapseD = dict()
 
     # Define dictionaries for colours and labels if not provided
     for nam in T.get_leaf_names():
@@ -163,7 +170,9 @@ def plot_phylo(tree, ax,
                          rev_align_tips=rev_align_tips,
                          branch_lengths=branch_lengths,
                          reverse=reverse,
-                         appearance=appearance)
+                         appearance=appearance,
+                         collapse=collapse,
+                         collapseD=collapseD)
 
     if rev_align_tips:
         ps = reverse_align(ax, ps, reverse)
@@ -229,8 +238,9 @@ def get_boxes(ax, texts):
     return (boxpos)
 
 
-def collapse_nodes(tree, collapse_list):
-    print (tree)
+def collapse_nodes(tree, collapse_list, collapse_names):
+    cD = dict(zip(collapse_list, collapse_names))
+    collapseD = dict()
     for string in collapse_list:
         keeps = set()
         collapsed = set()
@@ -255,7 +265,8 @@ def collapse_nodes(tree, collapse_list):
             if leaf in collapsed:
                 leaf.dist = ddD[leaf]
                 leaf.name = 'COLLAPSE|%s' % (leaf.name)
-    return (tree)
+                collapseD[leaf.name] = cD[string]
+    return (tree, collapseD)
 
 
 def draw_tree(tree, ax,
@@ -270,7 +281,9 @@ def draw_tree(tree, ax,
               rev_align_tips=False,
               branch_lengths=True,
               reverse=False,
-              appearance={}):
+              appearance={},
+              collapse=[],
+              collapseD=dict()):
     '''
     Plot a phylogenetic tree in matplotlib
 
@@ -347,7 +360,6 @@ def draw_tree(tree, ax,
     xint = width / tot_width
 
     if tree.is_leaf():
-
         # Position of the node tip
         x_tip_pos = x - (xint * td)
 
@@ -375,17 +387,41 @@ def draw_tree(tree, ax,
             bold = 'bold'
         else:
             bold = 'normal'
+
+        if 'COLLAPSE|' not in tree.name:
+            for c in collapse:
+                tree.name = tree.name.strip(c)
+            texti = appearance['label_dict'][tree.name]
+            # Plot the branch to the tip
+            ax.plot([x, x_tip_pos], [-y, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'])
+             
+        else:
+            texti = collapseD[tree.name]
+            yyy = (yint / 2) * 0.8
+            xxx = xint * 0.2
+            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x_tip_pos, x_tip_pos+xxx], [-y, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')           
+            ax.plot([x, x], [-y+yyy, -y-yyy],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
         textpos = ax.text(x_text_pos, -y,
-                          "  %s  " % appearance['label_dict'][tree.name],
+                          "  %s  " % texti,
                           color=appearance['col_dict'][tree.name],
                           fontsize=appearance['font_size'],
                           va='center', ha=hali, fontweight=bold)
-
-        # Plot the branch to the tip
-        ax.plot([x, x_tip_pos], [-y, -y],
-                color=appearance['line_col'],
-                lw=appearance['line_width'])
-
         # Add an extra line to the aligned tips if align_tips is specified
         if align_tips or rev_align_tips:
             line = ax.plot([x, x_ali_pos], [-y, -y],
@@ -402,7 +438,7 @@ def draw_tree(tree, ax,
 
     else:
         # This section draws the lines for the non-terminal nodes
-
+ 
         # For each tree, all of the children are visited and the function
         # is recursively called
         for c in tree.children:
@@ -427,7 +463,9 @@ def draw_tree(tree, ax,
                                    rev_align_tips=rev_align_tips,
                                    branch_lengths=branch_lengths,
                                    reverse=reverse,
-                                   appearance=appearance)
+                                   appearance=appearance,
+                                   collapse=collapse,
+                                   collapseD=collapseD)
 
             # y1 and y2 are the top and bottom positions of the current
             # child node on the y axis, respectively
@@ -436,8 +474,8 @@ def draw_tree(tree, ax,
             if c is tree.children[0]:
                 y1 = cym
             elif c is tree.children[-1]:
+                
                 y2 = cym
-
         # midpoint of node on y axis
         ym = (y1 + y2)/2
 
@@ -473,11 +511,11 @@ def draw_tree(tree, ax,
                 if tree.support == 1:
                     ax.text(x, -ym, " %i" % tree.support, ha='left',
                             va='center', fontsize=appearance['font_size']-2,
-                            color='#459156')
+                            color='#7c7c7c')
                 else:                    
                     ax.text(x, -ym, " %.2f" % tree.support, ha='left',
                             va='center', fontsize=appearance['font_size']-2,
-                            color='#459156')
+                            color='#7c7c7c')
             else:
                 ax.text(x, -ym, "%.2f " % tree.support, ha='right',
                         va='center', fontsize=appearance['font_size']-2)
