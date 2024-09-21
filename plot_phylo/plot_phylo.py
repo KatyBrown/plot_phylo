@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import ete3
 import numpy as np
+import post_draw
 
 
 def plot_phylo(tree, ax,
@@ -24,7 +25,8 @@ def plot_phylo(tree, ax,
                line_width=1,
                bold=[],
                collapse=[],
-               collapse_names=[]):
+               collapse_names=[],
+               auto_ax=True):
     '''
     Parameters
     ----------
@@ -175,67 +177,28 @@ name of the
                          collapseD=collapseD)
 
     if rev_align_tips:
-        ps = reverse_align(ax, ps, reverse)
+        ps = post_draw.reverse_align(ax, ps, reverse)
     # Hide axis
     if not show_axis:
         ax.set_axis_off()
     if scale_bar and branch_lengths:
         if not reverse:
-            draw_scale_bar(ax, width, height, maxdist, xpos, ypos,
-                           scale_bar_width=scale_bar_width,
-                           appearance=appearance)
+            post_draw.draw_scale_bar(ax, width, height, maxdist, xpos, ypos,
+                                     scale_bar_width=scale_bar_width,
+                                     appearance=appearance)
         else:
-            draw_scale_bar(ax, width, height, maxdist, -xpos, ypos,
-                           scale_bar_width=scale_bar_width,
-                           appearance=appearance)
+            post_draw.draw_scale_bar(ax, width, height, maxdist, -xpos, ypos,
+                                     scale_bar_width=scale_bar_width,
+                                     appearance=appearance)
     textobj = [p[1] for p in ps]
-    return (get_boxes(ax, textobj))
-
-
-def get_boxes(ax, texts):
-    '''
-    Converts a list of text objects to their co-ordinates on the axis in
-    axis units.
-
-    Parameters
-    ----------
-    ax : matplotlib.axes._axes.Axes,
-        An open matplotlib ax object where the tree will be plotted.
-    texts : list
-        A list of matplotlib.pyplot.text objects representing the tip
-        labels from the tree and their metadata.
-
-    Returns
-    -------
-    boxpos : dict
-        A dictionary of dictionaries where the top level keys are the tip
-        labels. Within each subdictionary the key value pairs are
-        index (position in the tree starting from the top) and the minimum,
-        maximum and central position of the text box on the x and y axis,
-        as index, xmin, xmid, xmax and ymin, ymid and ymax.
-
-    '''
-    boxpos = dict()
-    # Iterate through the tip labels
-    for i, txt in enumerate(texts):
-        # Get the position of the boxes containing the labels, convert to axis
-        # units
-        box = ax.transData.inverted().transform(txt.get_window_extent(
-            ax.figure.canvas.get_renderer()))
-        nam = txt.get_text().strip()
-        # Build the dictionary
-        boxpos[nam] = dict()
-        boxpos[nam]['index'] = i
-        boxpos[nam]['xmin'] = box[0][0].round(3)
-        boxpos[nam]['xmax'] = box[1][0].round(3)
-        boxpos[nam]['ymin'] = box[0][1].round(3)
-        boxpos[nam]['ymax'] = box[1][1].round(3)
-        boxpos[nam]['ymid'] = (box[0][1] + ((
-            box[1][1] - box[0][1]) / 2)).round(3)
-        boxpos[nam]['xmid'] = (
-            box[0][0] + ((box[1][0] - box[0][1]) / 2)).round(3)
-
-    return (boxpos)
+    
+    if auto_ax:
+        textobj, ax = post_draw.auto_axis(ax, textobj,
+                                          xpos, ypos,
+                                          width, height, maxdist,
+                                          scale_bar, branch_lengths)
+    boxes = post_draw.get_boxes(ax, textobj)
+    return (boxes)
 
 
 def collapse_nodes(tree, collapse_list, collapse_names):
@@ -400,23 +363,45 @@ def draw_tree(tree, ax,
         else:
             texti = collapseD[tree.name]
             yyy = (yint / 2) * 0.8
-            xxx = xint * 0.2
-            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x_tip_pos, x_tip_pos+xxx], [-y, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')           
-            ax.plot([x, x], [-y+yyy, -y-yyy],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
+            if branch_lengths:
+                xxx = xint * 0.4
+            else:
+                xxx = xint * 0.2
+            if not branch_lengths:
+                ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+                ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+                ax.plot([x_tip_pos, x_tip_pos+xxx], [-y, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+                ax.plot([x, x], [-y+yyy, -y-yyy],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+            else:
+                ax.plot([x, x_tip_pos], [-y+yyy, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+                ax.plot([x, x_tip_pos], [-y-yyy, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+                ax.plot([x_tip_pos, x_tip_pos], [-y, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+                ax.plot([x, x], [-y+yyy, -y-yyy],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'],
+                        solid_capstyle='butt')
+
         textpos = ax.text(x_text_pos, -y,
                           "  %s  " % texti,
                           color=appearance['col_dict'][tree.name],
@@ -523,148 +508,5 @@ def draw_tree(tree, ax,
         return (y, ym, ps)
 
 
-def reverse_align(ax, ps, reverse):
-    '''
-    Realigns the text in the tip labels so that for a standard tree, the
-    text is right aligned, for a mirrored tree (root on the right), the
-    text is left aligned. Only used when tip labels are set to be aligned.
-
-    This has to happen once the whole plot is drawn as the limits
-    of the text only exist once the text exists.
-
-    Parameters
-    ----------
-    ax : matplotlib.axes._axes.Axes
-        An open matplotlib ax object
-    ps : list
-        List of lists - ordered as tip labels, tip label text objects,
-        alignment lines (if aligned). All are in the same order.
-    reverse: bool
-        If True, reverse the tree on the y-axis, showing the root on the right
-        hand side. Default False.
-
-    Returns
-    -------
-    ps_new : list
-        List of lists - ordered as tip labels, tip label text objects,
-        alignment lines (if aligned). All are in the same order. Updated
-        based on new alignment.
-    '''
-
-    x_extremes = []
-    ys = []
-    # Used to determine which x co-ordinates to take depending on the
-    # tree orientation
-    if reverse:
-        indi = 0
-    else:
-        indi = 1
-    for pnam, ptext, pline in ps:
-        # Get the data units of the box which encloses the text
-        box = ax.transData.inverted().transform(
-            ptext.get_window_extent(renderer=ax.figure.canvas.get_renderer()))
-        # Get the rightmost point of the text box (regular tree)
-        # or the leftmost (reversed tree)
-        x_extreme = box[indi][0]
-        x_extremes.append(x_extreme)
-
-        # Store the y axis positions
-        ys.append(box[1][1])
-
-    if not reverse:
-        # For right alignment, take the rightmost x point
-        maxi = max(x_extremes)
-    else:
-        # For left alignment, take the leftmost x point
-        maxi = min(x_extremes)
-    alis = ['left', 'right']
-
-    ps_new = []
-    for i, p in enumerate(ps):
-        # Move the text to the right position
-        p[1].set_position([maxi, ys[i]])
-
-        # Get the current left end of the dotted alignment line
-        oldline = p[2][0].get_xdata()[0]
-
-        # Left or right align the text
-        p[1].set_horizontalalignment(alis[indi])
-
-        # Get the updated text position limits
-        pbox = ax.transData.inverted().transform(p[1].get_window_extent(
-            renderer=ax.figure.canvas.get_renderer()))
-
-        # Move the dotted line to hit the new text position
-        # int(not indi) swaps 0 for 1
-        p[2][0].set_xdata([pbox[int(not indi)][0], oldline])
-
-        # Set the y axis position
-        p[1].set_verticalalignment('center')
-
-        # Store the new values
-        ps_new.append(p)
-    return (ps_new)
 
 
-def draw_scale_bar(ax, width, height, depth, left, bottom,
-                   scale_bar_width=None,
-                   appearance={'font_size': 10}):
-    '''
-    Adds a scale bar to the tree - only when branch lengths are specified.
-
-    The default length is 0.25 * total tree width, or it can be specified
-    using scale_bar_width.
-
-    Parameters
-    ----------
-    ax : matplotlib.axes._axes.Axes
-        An open matplotlib ax object
-
-    height : float
-        Height of the tree, in axis units.
-    width : float
-        Width of the tree, in axis units.
-    depth: tuple(float, float, float)
-        Total height and width of the original tree in terms of number of
-        nodes, total branch length, number of tips
-    bottom: float
-        The bottom position of the tree on the y axis
-    scale_bar_width: float
-        The desired width of the scale bar, if not specified
-        tree width * 0.25 is used
-    appearance: dict
-        Dictionary of parameters specifying the appearance of the tree.
-    '''
-    # depth[1] - total width of the tree in tree units
-    # width - total width of tree in axis units
-    # xint - width of one tree unit in axis units
-    xint = width / depth[1]
-
-    # Distance from x axis to start the scale bar
-    # 10% of total tree width
-    interx = width * 0.1
-
-    # Distance on y axis to extend the bracket ends on the scale bar
-    # 10% of the height of one node
-    intery = (height / depth[2]) * 0.1
-    bottom -= (height / depth[2])
-    # scale_bar_width = total width of scale bar in axis units
-    if not scale_bar_width:
-        scale_bar_width = width * 0.25
-
-    # Convert the scale bar width to tree units
-    scale = scale_bar_width / xint
-
-    # Draw the horizontal line
-    ax.plot([left+interx, left+interx+scale_bar_width],
-            [bottom, bottom], color='black')
-
-    # Bracket the ends of the scale bar with small vertical lines
-    ax.plot([left+interx, left+interx],
-            [bottom-intery, bottom+intery], color='black')
-    ax.plot([left+interx+scale_bar_width, left+interx+scale_bar_width],
-            [bottom-intery, bottom+intery], color='black')
-
-    # Add the scale text
-    ax.text(left+interx+(scale_bar_width/2), bottom+intery, "%.3f" % scale,
-            va='bottom', ha='center', fontsize=appearance['font_size']-2)
