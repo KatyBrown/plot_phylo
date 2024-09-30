@@ -45,9 +45,40 @@ def get_boxes(ax, texts):
     return (boxpos)
 
 
-def auto_axis(subplot, textobj, xpos, ypos, width, height, depth, scale_bar,
+def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
               branch_lengths):
+    """
+    Adjust the axis limits around the tree automatically (rather than
+    using user definted values).
+    
+    Parameters
+    ----------
+    ax : matplotlib.axes._axes.Axes
+        An open matplotlib ax object
+    textobj: list of matplotlib.text.Text
+        List of text objects containing tip labels, used to ensure the
+        labels are within the limits of the plot
+    xpos : float
+        User defined desired position of the root node of the tree on the x
+        axis of ax, in axis units. 
+    ypos : float
+        User defined desired position of the bottom of the tree on the y
+        axis of ax, in axis units.
+    height : float
+        User defined desired height of the tree, in axis units. Default 10.
+    width : float
+        User defined desired width of the tree, in axis units. Default 10.
+    depth: tuple(float, float, float)
+        Total height and width of the original tree in terms of number of
+        nodes, total branch length, number of tips
+    scale_bar: bool
+        User defined - True to draw a scale bar, else False
+    branch_lengths: bool
+        User defined - True to use true branch lengths, False to use
+        fixed branch lengths
 
+    """
+    print (type(textobj[0]))
     xint = width * 0.1
     yint = height / depth[2]
 
@@ -55,13 +86,13 @@ def auto_axis(subplot, textobj, xpos, ypos, width, height, depth, scale_bar,
     ymax = ypos + height + (yint * 0.5)
     if scale_bar:
         ymin -= yint + (yint * 0.2)
-    subplot.set_ylim(ymin, ymax)
+    ax.set_ylim(ymin, ymax)
     xmin = xpos - xint
-    nboxes = get_boxes(subplot, textobj)
+    nboxes = get_boxes(ax, textobj)
     xmaxes = [nboxes[x]['xmax'] for x in nboxes]
     xmax = xint + max(xmaxes)
-    subplot.set_xlim(xmin, xmax)
-    return (textobj, subplot)
+    ax.set_xlim(xmin, xmax)
+    return (textobj, ax)
 
 def draw_scale_bar(ax, width, height, depth, left, bottom,
                    scale_bar_width=None,
