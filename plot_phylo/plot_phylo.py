@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import ete3
-import numpy as np
 
 
 def plot_phylo(tree, ax,
@@ -22,8 +21,7 @@ def plot_phylo(tree, ax,
                font_size=10,
                line_col='black',
                line_width=1,
-               bold=[],
-               collapse=[]):
+               bold=[]):
     '''
     Parameters
     ----------
@@ -107,12 +105,8 @@ def plot_phylo(tree, ax,
             T = ete3.Tree(tree, format=1)
         except ete3.parser.newick.NewickError as e:
             raise RuntimeError(f"Error in parsing Newick format: {e}")
-            
     if outgroup and outgroup in set(T.get_leaf_names()):
         T.set_outgroup(outgroup)
-    
-    if len(collapse) != 0:
-        T = collapse_nodes(T, collapse)
 
     # Define dictionaries for colours and labels if not provided
     for nam in T.get_leaf_names():
@@ -229,35 +223,6 @@ def get_boxes(ax, texts):
     return (boxpos)
 
 
-def collapse_nodes(tree, collapse_list):
-    print (tree)
-    for string in collapse_list:
-        keeps = set()
-        collapsed = set()
-        done = set()
-        ddD = dict()
-        for node in tree.traverse():
-            x = 0
-            L = list(node.get_leaves())
-            dd = []
-            for leaf in L:
-                if leaf.name.endswith(string) and leaf not in done:
-                    dd.append(leaf.dist)
-                    x += 1
-            if x == len(L) or (len(L) == 1 and leaf not in done):
-                keeps.add(L[0].name)
-                done = done | set(L)
-                if x > 1:
-                    collapsed.add(L[0])
-                    ddD[L[0]] = np.mean(dd)
-        tree.prune(keeps)
-        for leaf in tree.get_leaves():
-            if leaf in collapsed:
-                leaf.dist = ddD[leaf]
-                leaf.name = 'COLLAPSE|%s' % (leaf.name)
-    return (tree)
-
-
 def draw_tree(tree, ax,
               x=0,
               y=0,
@@ -307,8 +272,6 @@ def draw_tree(tree, ax,
         hand side. Default False.
     appearance: dict
         Dictionary of parameters specifying the appearance of the tree.
-    collapse: list
-        Collapse nodes where possible based on strings in the list.
 
     Returns
     -------
