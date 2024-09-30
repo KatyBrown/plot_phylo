@@ -137,6 +137,9 @@ name of the
                   'label_dict': label_dict,
                   'show_support': show_support,
                   'bold': bold}
+    if auto_ax:
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
 
     # Calculate the total height and width of the original tree
     # in terms of number of nodes, total branch length, number of tips

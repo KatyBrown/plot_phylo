@@ -78,7 +78,6 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
         fixed branch lengths
 
     """
-    print (type(textobj[0]))
     xint = width * 0.1
     yint = height / depth[2]
 
