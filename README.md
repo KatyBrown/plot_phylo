@@ -21,7 +21,7 @@ Full documentation is available via [ReadTheDocs](https://plot-phylo.readthedocs
 The module depends on the [ETE Toolkit](http://etetoolkit.org/), an excellent existing Python framework for analysing and visualising phylogenetic trees, plus the [matplotlib](https://matplotlib.org/) visualisation library. It is designed to make generating complex figures incorporating phylogenies easier, as matplotlib plotting functions can be used on top of the basic tree.
 
 
-# Installation
+## Installation
 
 **Requirements**
 
@@ -39,7 +39,7 @@ Or clone the GitHub repository directly.
 
 `git clone git@github.com:KatyBrown/plot_phylo.git`
 
-# Quick Start
+## Quick Start
 For detailed usage instructions, visit our [ReadTheDocs page](https://plot-phylo.readthedocs.io/en/latest/index.html).
 
 To draw a phylogeny under the default settings onto a blank figure.
@@ -62,7 +62,7 @@ plt.savefig("examples/basic_plot.png", bbox_inches='tight')
 ```
 
 
-# Cite
+## Cite
 
 If you use this repository in your work, please cite:
 
