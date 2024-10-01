@@ -18,6 +18,9 @@ This means that:
 
 Full documentation is available via [ReadTheDocs](https://plot-phylo.readthedocs.io/en/latest/index.html).
 
+The module depends on the [ETE Toolkit](http://etetoolkit.org/), an excellent existing Python framework for analysing and visualising phylogenetic trees, plus the [matplotlib](https://matplotlib.org/) visualisation library. It is designed to make generating complex figures incorporating phylogenies easier, as matplotlib plotting functions can be used on top of the basic tree.
+
+
 # Installation
 
 **Requirements**
@@ -35,3 +38,7 @@ You can also download the latest release [here](https://github.com/KatyBrown/plo
 Or clone the GitHub repository directly.
 
 `git clone git@github.com:KatyBrown/plot_phylo.git`
+
+# Cite
+If you use this repository in your work, please cite:
+Brown, K (2024) plot_phylo. https://github.com/KatyBrown/plot_phylo
