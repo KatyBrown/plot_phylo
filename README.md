@@ -1,4 +1,8 @@
-![example workflow](https://github.com/KatyBrown/plot_phylo/actions/workflows/main.yml/badge.svg)
+![Tests Passing](https://github.com/KatyBrown/plot_phylo/actions/workflows/main.yml/badge.svg)<br>
+[![Documentation Status](https://readthedocs.org/projects/plot-phylo/badge/?version=latest)](https://plot-phylo.readthedocs.io/en/latest/?badge=latest)<br>
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)<br>
+![Python Versions](https://img.shields.io/pypi/pyversions/plot-phylo)<br>
+![PyPI - Version](https://img.shields.io/pypi/v/plot-phylo)
 
 # plot_phylo
 
