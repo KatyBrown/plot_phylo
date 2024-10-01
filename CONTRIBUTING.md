@@ -22,6 +22,9 @@ If contributing to plot_phylo, please ensure that you
 
 If you're unsure about any of these steps, please raise an issue and I can help you.
 
+## Continuous Integration
+I use GitHub Actions for continuous integration to ensure code quality. You can view the configuration [here](https://github.com/KatyBrown/plot_phylo/blob/main/.github/workflows/main.yml).
+
 ## Code of Conduct
 
 Please review our Code of Conduct before participating. Be kind and respectful to fellow contributors.
