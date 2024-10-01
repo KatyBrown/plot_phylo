@@ -67,3 +67,6 @@ plt.savefig("examples/basic_plot.png", bbox_inches='tight')
 If you use this repository in your work, please cite:
 
 Brown, K (2024) plot_phylo. https://github.com/KatyBrown/plot_phylo
+
+## Continuous Integration
+I use GitHub Actions for continuous integration to ensure code quality. You can view the configuration [here](https://github.com/KatyBrown/plot_phylo/blob/main/.github/workflows/main.yml).
