@@ -20,4 +20,4 @@ requires-python = ">=3.6"
 [project.urls]
 Documentation = "https://plot-phylo.readthedocs.io"
 Repository = "https://github.com/KatyBrown/plot_phylo"
-Bug Tracker = "https://github.com/KatyBrown/plot_phylo/issues"
+"Bug Tracker" = "https://github.com/KatyBrown/plot_phylo/issues"
