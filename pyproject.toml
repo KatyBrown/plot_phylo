@@ -1,41 +1,23 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=42",
+    	    "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "plot-phylo"
-version = "0.1.10"
+dynamic = ["version"]
 description = "This module allows the user to plot a phylogenetic tree on an existing matplotlib axis."
 readme = "README.md"
-license = { text = "MIT" }
-keywords = ["phylogenetics", "matplotlib"]
+license = { text = "MIT License" }
+keywords = ["phylogenetics",
+	    "matplotlib"]
+authors = [{name = "Katy Brown", email = "kab84@cam.ac.uk"}]
+maintainers = [{name = "Katy Brown", email = "kab84@cam.ac.uk"}]
+dependencies = ["ete3 >= 3.1.0",
+    	        "matplotlib >= 2.1.1"]
+requires-python = ">=3.6"
 
-# Author information
-authors = [
-    { name = "Katy Brown", email = "kab84@cam.ac.uk" }
-]
-
-# Maintainer information (optional)
-maintainers = [
-    { name = "Katy Brown", email = "kab84@cam.ac.uk" }
-]
-
-# Project URLs (optional but helpful for linking to docs, source, etc.)
-urls = {
-    "Documentation" = "https://plot-phylo.readthedocs.io",
-    "Source Code" = "https://github.com/KatyBrown/plot_phylo",
-    "Bug Tracker" = "https://github.com/KatyBrown/plot_phylo/issues"
-}
-
-# Correct placement of dependencies
-dependencies = [
-    "ete3 >= 3.1.0",
-    "matplotlib >= 2.1.1"
-]
-
-# Python version requirements
-[project.requires-python]
-version = ">=3.6"
+[project.urls]
+Documentation = "https://plot-phylo.readthedocs.io"
+Repository = "https://github.com/KatyBrown/plot_phylo"
+Bug Tracker = "https://github.com/KatyBrown/plot_phylo/issues"
