@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from plot_phylo.plot_phylo import plot_phylo
+import plot_phylo
 import copy
 
 # Default parameters values
