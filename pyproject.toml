@@ -1,6 +1,23 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=42",
+    	    "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "plot-phylo"
+dynamic = ["version"]
+description = "This module allows the user to plot a phylogenetic tree on an existing matplotlib axis."
+readme = "README.md"
+license = { text = "MIT License" }
+keywords = ["phylogenetics",
+	    "matplotlib"]
+authors = [{name = "Katy Brown", email = "kab84@cam.ac.uk"}]
+maintainers = [{name = "Katy Brown", email = "kab84@cam.ac.uk"}]
+dependencies = ["ete3 >= 3.1.0",
+    	        "matplotlib >= 2.1.1"]
+requires-python = ">=3.6"
+
+[project.urls]
+Documentation = "https://plot-phylo.readthedocs.io"
+Repository = "https://github.com/KatyBrown/plot_phylo"
+"Bug Tracker" = "https://github.com/KatyBrown/plot_phylo/issues"
