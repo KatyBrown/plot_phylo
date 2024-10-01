@@ -10,10 +10,11 @@ This means that:
 * Automatically generated and updated figures can include phylogenies
 
 1. [Installation](pages/installation.md)
-2. [Quick Start](pages/quickstart.md)
-3. [Parameters](pages/parameters.md)
-4. [Incorporating Matplotlib Elements](pages/matplotlib.md)
-5. [Functions](pages/functions.html)
-6. [Detailed Example](pages/detailed.md)
+2. [Testing](pages/testing.md)
+3. [Quick Start](pages/quickstart.md)
+4. [Parameters](pages/parameters.md)
+5. [Incorporating Matplotlib Elements](pages/matplotlib.md)
+6. [Functions](pages/functions.html)
+7. [Detailed Example](pages/detailed.md)
 
 The module depends on the [ETE Toolkit](http://etetoolkit.org/), an excellent existing Python framework for analysing and visualising phylogenetic trees, plus the [matplotlib](https://matplotlib.org/) visualisation library.

@@ -15,3 +15,7 @@ You can also download the latest release [here](https://github.com/KatyBrown/plo
 Or clone the GitHub repository directly.
 
 `git clone https://github.com/KatyBrown/plot_phylo.git`
+
+If cloning directly, matplotlib and ete3 need to be installed, e.g. via pip or conda.
+
+
