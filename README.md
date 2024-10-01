@@ -40,5 +40,7 @@ Or clone the GitHub repository directly.
 `git clone git@github.com:KatyBrown/plot_phylo.git`
 
 # Cite
+
 If you use this repository in your work, please cite:
+
 Brown, K (2024) plot_phylo. https://github.com/KatyBrown/plot_phylo
