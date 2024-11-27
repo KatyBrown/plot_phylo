@@ -50,7 +50,7 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
     """
     Adjust the axis limits around the tree automatically (rather than
     using user definted values).
-    
+
     Parameters
     ----------
     ax : matplotlib.axes._axes.Axes
@@ -60,7 +60,7 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
         labels are within the limits of the plot
     xpos : float
         User defined desired position of the root node of the tree on the x
-        axis of ax, in axis units. 
+        axis of ax, in axis units.
     ypos : float
         User defined desired position of the bottom of the tree on the y
         axis of ax, in axis units.
@@ -92,6 +92,7 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
     xmax = xint + max(xmaxes)
     ax.set_xlim(xmin, xmax)
     return (textobj, ax)
+
 
 def draw_scale_bar(ax, width, height, depth, left, bottom,
                    scale_bar_width=None,

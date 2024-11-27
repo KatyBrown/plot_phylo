@@ -111,10 +111,10 @@ name of the
             T = ete3.Tree(tree, format=1)
         except ete3.parser.newick.NewickError as e:
             raise RuntimeError(f"Error in parsing Newick format: {e}")
-            
+
     if outgroup and outgroup in set(T.get_leaf_names()):
         T.set_outgroup(outgroup)
-    
+
     if len(collapse) != 0:
         assert len(collapse) == len(collapse_names), "To collapse nodes the \
             collapse_strings and collapse_names parameters must be lists \
@@ -194,7 +194,7 @@ name of the
                                      scale_bar_width=scale_bar_width,
                                      appearance=appearance)
     textobj = [p[1] for p in ps]
-    
+
     if auto_ax:
         textobj, ax = post_draw.auto_axis(ax, textobj,
                                           xpos, ypos,
@@ -362,7 +362,7 @@ def draw_tree(tree, ax,
             ax.plot([x, x_tip_pos], [-y, -y],
                     color=appearance['line_col'],
                     lw=appearance['line_width'])
-             
+
         else:
             texti = collapseD[tree.name]
             yyy = (yint / 2) * 0.8
@@ -426,7 +426,7 @@ def draw_tree(tree, ax,
 
     else:
         # This section draws the lines for the non-terminal nodes
- 
+
         # For each tree, all of the children are visited and the function
         # is recursively called
         for c in tree.children:
@@ -462,7 +462,7 @@ def draw_tree(tree, ax,
             if c is tree.children[0]:
                 y1 = cym
             elif c is tree.children[-1]:
-                
+
                 y2 = cym
         # midpoint of node on y axis
         ym = (y1 + y2)/2
@@ -500,7 +500,7 @@ def draw_tree(tree, ax,
                     ax.text(x, -ym, " %i" % tree.support, ha='left',
                             va='center', fontsize=appearance['font_size']-2,
                             color='#7c7c7c')
-                else:                    
+                else:
                     ax.text(x, -ym, " %.2f" % tree.support, ha='left',
                             va='center', fontsize=appearance['font_size']-2,
                             color='#7c7c7c')
@@ -509,7 +509,3 @@ def draw_tree(tree, ax,
                         va='center', fontsize=appearance['font_size']-2)
 
         return (y, ym, ps)
-
-
-
-
