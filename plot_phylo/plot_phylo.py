@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 import ete3
-from . import draw_tree
-from . import amend_tree
+try:
+    from plot_phylo import draw_tree
+    from plot_phylo import amend_tree
+    from plot_phylo import get_boxes
+except ImportError:
+    import draw_tree
+    import amend_tree
+    import get_boxes
 
 
 def plot_phylo(tree, ax,
@@ -137,6 +143,12 @@ name of the
                   'label_dict': label_dict,
                   'show_support': show_support,
                   'bold': bold}
+
+    structure = {'align_tips': align_tips,
+                 'rev_align_tips': rev_align_tips,
+                 'branch_lengths': branch_lengths,
+                 'reverse': reverse}
+
     if auto_ax:
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 10)
@@ -159,6 +171,10 @@ name of the
 
     if reverse:
         xpos = -xpos
+
+    dims = {'height': height,
+            'width': width,
+            'depth': maxdist}
     # Call the main function. The second and third returns are used
     # internally when the function is called recursively but
     # are not needed by the user
@@ -168,13 +184,8 @@ name of the
                                    y=-ypos-height,
                                    x0=xpos,
                                    ps=[],
-                                   height=height,
-                                   width=width,
-                                   depth=maxdist,
-                                   align_tips=align_tips,
-                                   rev_align_tips=rev_align_tips,
-                                   branch_lengths=branch_lengths,
-                                   reverse=reverse,
+                                   dims=dims,
+                                   structure=structure,
                                    appearance=appearance,
                                    collapse=collapse,
                                    collapseD=collapseD)
@@ -200,5 +211,5 @@ name of the
                                            xpos, ypos,
                                            width, height, maxdist,
                                            scale_bar, branch_lengths)
-    boxes = amend_tree.get_boxes(ax, textobj)
+    boxes = get_boxes.get_boxes(ax, textobj)
     return (boxes)

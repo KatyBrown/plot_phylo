@@ -1,0 +1,6 @@
+__pycache__
+.coverage
+*~
+dist
+man/_build
+*egg*

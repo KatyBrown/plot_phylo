@@ -2,19 +2,132 @@
 import numpy as np
 
 
+def add_leaf(tree, ax, ps,
+             posi,
+             appearance,
+             structure,
+             collapse, collapseD):
+    x = posi['x']
+    y = posi['y']
+
+    # Position of the node tip
+    x_tip_pos = x - (posi['xint'] * posi['td'])
+    xmax = (posi['tot_width'] * posi['xint'])
+
+    # x_ali_pos is used to align the tips if align_tips is specified
+    # x_text_pos is the position of the text - if the tips are aligned
+    # the text is also aligned
+    if structure['align_tips'] or structure['rev_align_tips']:
+        x_ali_pos = (posi['tot_width'] * posi['xint']) + posi['x0'] + 1
+        x_text_pos = x_ali_pos
+    else:
+        x_ali_pos = None
+        x_text_pos = x
+    if structure['reverse']:
+        x_tip_pos = xmax - x_tip_pos
+        x_text_pos = xmax - x_text_pos
+        if x_ali_pos is not None:
+            x_ali_pos = xmax - x_ali_pos
+        x = xmax - x
+        hali = 'right'
+    else:
+        hali = 'left'
+    # Plot the tip label
+    if tree.name in appearance['bold']:
+        bold = 'bold'
+    else:
+        bold = 'normal'
+
+    if 'COLLAPSE|' not in tree.name:
+        for c in collapse:
+            tree.name = tree.name.strip(c)
+        texti = appearance['label_dict'][tree.name]
+        # Plot the branch to the tip
+        ax.plot([x, x_tip_pos], [-posi['y'], -posi['y']],
+                color=appearance['line_col'],
+                lw=appearance['line_width'])
+
+    else:
+        texti = collapseD[tree.name]
+        yyy = (posi['yint'] / 2) * 0.8
+        if structure['branch_lengths']:
+            xxx = posi['xint'] * 0.4
+        else:
+            xxx = posi['xint'] * 0.2
+        if not structure['branch_lengths']:
+            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x_tip_pos, x_tip_pos+xxx], [-y, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x, x], [-y+yyy, -y-yyy],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+        else:
+            ax.plot([x, x_tip_pos], [-y+yyy, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x, x_tip_pos], [-y-yyy, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x_tip_pos, x_tip_pos], [-y, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+            ax.plot([x, x], [-y+yyy, -y-yyy],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'],
+                    solid_capstyle='butt')
+
+    textpos = ax.text(x_text_pos, -y,
+                      "  %s  " % texti,
+                      color=appearance['col_dict'][tree.name],
+                      fontsize=appearance['font_size'],
+                      va='center', ha=hali, fontweight=bold)
+    # Add an extra line to the aligned tips if align_tips is specified
+    if structure['align_tips'] or structure['rev_align_tips']:
+        line = ax.plot([x, x_ali_pos], [-y, -y],
+                       color=appearance['line_col'], alpha=0.2,
+                       ls="--",
+                       lw=appearance['line_width'])
+        ps.append([tree.name, textpos, line])
+    else:
+        ps.append([tree.name, textpos])
+
+    # Store the tip label and the position of the tip on the x and y axis
+
+    return (y+posi['yint'], y, ps)
+
+
 def draw_tree(tree, ax,
               x=0,
               y=0,
               x0=0,
               ps=[],
-              height=10,
-              width=10,
-              depth=None,
-              align_tips=False,
-              rev_align_tips=False,
-              branch_lengths=True,
-              reverse=False,
-              appearance={},
+              dims={'width': 10,
+                    'height': 10,
+                    'depth': [5, 5, 5]},
+              structure={'align_tips': False,
+                         'rev_align_tips': False,
+                         'branch_lengths': True,
+                         'reverse': False},
+              appearance={'col_dict': {},
+                          'label_dict': {},
+                          'font_size': 10,
+                          'line_col': 'black',
+                          'line_width': 1,
+                          'show_support': True,
+                          'bold': []},
               collapse=[],
               collapseD=dict()):
     '''
@@ -69,7 +182,7 @@ def draw_tree(tree, ax,
     # This is the increment for the position of each terminal node on
     # the y axis.
     # The number of nodes - 1 is used because one branch will be at position 0
-    yint = height / (depth[2] - 1)
+    yint = dims['height'] / (dims['depth'][2] - 1)
 
     # td is the branch length - if the branch_lengths parameter is False
     # it is set to 1
@@ -80,116 +193,29 @@ def draw_tree(tree, ax,
 
     # textinc stops the tip labels from being immediately next to the tips
 
-    if branch_lengths:
+    if structure['branch_lengths']:
         td = tree.dist
-        tot_width = depth[1]
+        tot_width = dims['depth'][1]
 
     else:
         td = 1
-        tot_width = depth[0] + 1
+        tot_width = dims['depth'][0] + 1
 
     # This interval is used to scale the interval for each node
     # so the total tree width matches the value specified
-    xint = width / tot_width
+    xint = dims['width'] / tot_width
+
+    posi = {'x': x,
+            'y': y,
+            'x0': x0,
+            'xint': xint,
+            'yint': yint,
+            'td': td,
+            'tot_width': tot_width}
 
     if tree.is_leaf():
-        # Position of the node tip
-        x_tip_pos = x - (xint * td)
-
-        # x_ali_pos is used to align the tips if align_tips is specified
-        # x_text_pos is the position of the text - if the tips are aligned
-        # the text is also aligned
-        if align_tips or rev_align_tips:
-            x_ali_pos = (tot_width * xint) + x0 + 1
-            x_text_pos = x_ali_pos
-        else:
-            x_ali_pos = None
-            x_text_pos = x
-        xmax = (tot_width * xint)
-        if reverse:
-            x_tip_pos = xmax - x_tip_pos
-            x_text_pos = xmax - x_text_pos
-            if x_ali_pos is not None:
-                x_ali_pos = xmax - x_ali_pos
-            x = xmax - x
-            hali = 'right'
-        else:
-            hali = 'left'
-        # Plot the tip label
-        if tree.name in appearance['bold']:
-            bold = 'bold'
-        else:
-            bold = 'normal'
-
-        if 'COLLAPSE|' not in tree.name:
-            for c in collapse:
-                tree.name = tree.name.strip(c)
-            texti = appearance['label_dict'][tree.name]
-            # Plot the branch to the tip
-            ax.plot([x, x_tip_pos], [-y, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'])
-
-        else:
-            texti = collapseD[tree.name]
-            yyy = (yint / 2) * 0.8
-            if branch_lengths:
-                xxx = xint * 0.4
-            else:
-                xxx = xint * 0.2
-            if not branch_lengths:
-                ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-                ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-                ax.plot([x_tip_pos, x_tip_pos+xxx], [-y, -y],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-                ax.plot([x, x], [-y+yyy, -y-yyy],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-            else:
-                ax.plot([x, x_tip_pos], [-y+yyy, -y],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-                ax.plot([x, x_tip_pos], [-y-yyy, -y],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-                ax.plot([x_tip_pos, x_tip_pos], [-y, -y],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-                ax.plot([x, x], [-y+yyy, -y-yyy],
-                        color=appearance['line_col'],
-                        lw=appearance['line_width'],
-                        solid_capstyle='butt')
-
-        textpos = ax.text(x_text_pos, -y,
-                          "  %s  " % texti,
-                          color=appearance['col_dict'][tree.name],
-                          fontsize=appearance['font_size'],
-                          va='center', ha=hali, fontweight=bold)
-        # Add an extra line to the aligned tips if align_tips is specified
-        if align_tips or rev_align_tips:
-            line = ax.plot([x, x_ali_pos], [-y, -y],
-                           color=appearance['line_col'], alpha=0.2,
-                           ls="--",
-                           lw=appearance['line_width'])
-            ps.append([tree.name, textpos, line])
-        else:
-            ps.append([tree.name, textpos])
-
-        # Store the tip label and the position of the tip on the x and y axis
-
-        return (y+yint, y, ps)
+        return add_leaf(tree, ax, ps,
+                        posi, appearance, structure, collapse, collapseD)
 
     else:
         # This section draws the lines for the non-terminal nodes
@@ -198,7 +224,7 @@ def draw_tree(tree, ax,
         # is recursively called
         for c in tree.children:
             # Scale by the branch length if branch_lengths is specified
-            if branch_lengths:
+            if structure['branch_lengths']:
                 tdc = c.dist
             else:
                 tdc = 1
@@ -211,13 +237,8 @@ def draw_tree(tree, ax,
 
             y, cym, ps = draw_tree(c, ax, x_vert_pos, y,
                                    x0=x0, ps=ps,
-                                   height=height,
-                                   width=width,
-                                   depth=depth,
-                                   align_tips=align_tips,
-                                   rev_align_tips=rev_align_tips,
-                                   branch_lengths=branch_lengths,
-                                   reverse=reverse,
+                                   dims=dims,
+                                   structure=structure,
                                    appearance=appearance,
                                    collapse=collapse,
                                    collapseD=collapseD)
@@ -234,7 +255,7 @@ def draw_tree(tree, ax,
         # midpoint of node on y axis
         ym = (y1 + y2)/2
 
-        if reverse:
+        if structure['reverse']:
             xmax = (tot_width * xint)
             x = xmax - x
 
@@ -249,7 +270,7 @@ def draw_tree(tree, ax,
         # vertical line and x-(td*xint) is one increment back
         # towards the root
 
-        if not reverse:
+        if not structure['reverse']:
             ax.plot([x, x-(td*xint)], [-ym, -ym],
                     color=appearance['line_col'],
                     lw=appearance['line_width'])
@@ -262,7 +283,7 @@ def draw_tree(tree, ax,
         # TODO - currently lands on top of the branches if branch_lengths
         # is switched on
         if appearance['show_support']:
-            if not reverse:
+            if not structure['reverse']:
                 if tree.support == 1:
                     ax.text(x, -ym, " %i" % tree.support, ha='left',
                             va='center', fontsize=appearance['font_size']-2,
