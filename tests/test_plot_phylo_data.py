@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import plot_phylo
+from plot_phylo import draw_tree
 import copy
 
 # Default parameters values
@@ -16,9 +17,9 @@ variD = dict(zip(varis, defaults))
 varis.remove('height')
 variD.pop('height')
 
-defaults_draw_tree = plot_phylo.draw_tree.__defaults__
-ac_draw_tree = plot_phylo.draw_tree.__code__.co_argcount
-varis_draw_tree = list(plot_phylo.draw_tree.__code__.co_varnames[
+defaults_draw_tree = draw_tree.draw_tree.__defaults__
+ac_draw_tree = draw_tree.draw_tree.__code__.co_argcount
+varis_draw_tree = list(draw_tree.draw_tree.__code__.co_varnames[
     ac_draw_tree-len(defaults_draw_tree):ac_draw_tree])
 varis_draw_tree.remove('height')
 
@@ -94,6 +95,7 @@ for test in tests_draw_tree:
                 'line_col', 'line_width', 'show_support', 'bold']:
         curr_dict['appearance'][var] = curr_dict[var]
     curr_dict['depth'] = [5, 5, 5]
+    curr_dict['collapseD'] = dict()
     curr_dict.update(test)
     pass_vals = [curr_dict[v] for v in varis_draw_tree]
     pass_vals.append('tests/test_objects/%s.pickle' % testnam)
@@ -116,6 +118,7 @@ for test in tests_draw_tree:
         for var in ['col_dict', 'label_dict', 'font_size',
                     'line_col', 'line_width', 'show_support', 'bold']:
             curr_dict['appearance'][var] = curr_dict[var]
+        curr_dict['collapseD'] = dict()
         curr_dict.update(test)
         curr_dict['depth'] = [5, 5, 5]
         curr_dict.pop('rev_align_tips')

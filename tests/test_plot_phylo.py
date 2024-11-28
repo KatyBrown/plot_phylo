@@ -2,6 +2,8 @@
 import matplotlib.pyplot as plt
 import matplotlib
 import plot_phylo
+from plot_phylo import draw_tree
+from plot_phylo import amend_tree
 import pytest
 from test_plot_phylo_data import (test_plot_phylo_vars,
                                   test_plot_phylo_list,
@@ -20,7 +22,6 @@ import pickle
 import os
 import shutil
 import numpy as np
-matplotlib.use('Agg')
 
 
 def compare_images(f1, f2, tol):
@@ -63,7 +64,10 @@ def test_plot_phylo_params(xpos,
                            line_width,
                            bold,
                            expected_figure,
-                           ID, tree, ylim):
+                           ID, tree, ylim,
+                           collapse,
+                           collapse_names,
+                           auto_ax):
 
     tree_stem = tree.split("/")[-1].split(".")[0]
 
@@ -90,7 +94,10 @@ def test_plot_phylo_params(xpos,
                           font_size=font_size,
                           line_col=line_col,
                           line_width=line_width,
-                          bold=bold)
+                          bold=bold,
+                          collapse=collapse,
+                          collapse_names=collapse_names,
+                          auto_ax=auto_ax)
     try:
         os.mkdir("test_temp")
     except FileExistsError:
@@ -128,7 +135,9 @@ def test_draw_tree_params(x,
                           expected,
                           ID,
                           tree,
-                          ylim):
+                          ylim,
+                          collapse,
+                          collapseD):
 
     try:
         T = ete3.Tree(tree)
@@ -150,19 +159,19 @@ def test_draw_tree_params(x,
         if nam not in appearance['col_dict']:
             appearance['col_dict'][nam] = 'black'
 
-    test_obj = plot_phylo.draw_tree(tree=T, ax=a,
-                                    x=x,
-                                    y=y,
-                                    x0=x0,
-                                    ps=ps,
-                                    height=ylim-1,
-                                    width=width,
-                                    depth=depth,
-                                    align_tips=align_tips,
-                                    rev_align_tips=rev_align_tips,
-                                    branch_lengths=branch_lengths,
-                                    reverse=reverse,
-                                    appearance=appearance)
+    test_obj = draw_tree.draw_tree(tree=T, ax=a,
+                                   x=x,
+                                   y=y,
+                                   x0=x0,
+                                   ps=ps,
+                                   height=ylim-1,
+                                   width=width,
+                                   depth=depth,
+                                   align_tips=align_tips,
+                                   rev_align_tips=rev_align_tips,
+                                   branch_lengths=branch_lengths,
+                                   reverse=reverse,
+                                   appearance=appearance)
     plt.close()
     ytest = round(test_obj[0], 2)
     y2test = round(test_obj[1], 2)
@@ -203,7 +212,9 @@ def test_reverse_align_params(x,
                               expected,
                               ID,
                               tree,
-                              ylim):
+                              ylim,
+                              collapse,
+                              collapseD):
     try:
         T = ete3.Tree(tree)
     except ete3.parser.newick.NewickError:
@@ -224,22 +235,22 @@ def test_reverse_align_params(x,
         if nam not in appearance['col_dict']:
             appearance['col_dict'][nam] = 'black'
 
-    _, _, ps = plot_phylo.draw_tree(tree=T, ax=a,
-                                    x=x,
-                                    y=y,
-                                    x0=x0,
-                                    ps=[],
-                                    height=ylim-1,
-                                    width=width,
-                                    depth=depth,
-                                    align_tips=True,
-                                    rev_align_tips=True,
-                                    branch_lengths=branch_lengths,
-                                    reverse=reverse,
-                                    appearance=appearance)
-    plt.close()
-    reverse = plot_phylo.reverse_align(a, ps, True)
+    _, _, ps = draw_tree.draw_tree(tree=T, ax=a,
+                                   x=x,
+                                   y=y,
+                                   x0=x0,
+                                   ps=[],
+                                   height=ylim-1,
+                                   width=width,
+                                   depth=depth,
+                                   align_tips=True,
+                                   rev_align_tips=True,
+                                   branch_lengths=branch_lengths,
+                                   reverse=reverse,
+                                   appearance=appearance)
 
+    reverse = amend_tree.reverse_align(a, ps, True)
+    plt.close()
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
 
     test_dat = []
@@ -271,7 +282,7 @@ def test_reverse_align_params(x,
                                   test_get_boxes_texts,
                                   test_get_boxes_results)))
 def test_get_boxes(ax, texts, expected_result):
-    boxes = plot_phylo.get_boxes(ax, texts)
+    boxes = amend_tree.get_boxes(ax, texts)
     bclean = dict()
     for b, vals in boxes.items():
         bclean[b] = dict()
@@ -303,7 +314,10 @@ def test_bad_tree(xpos,
                   line_width,
                   bold,
                   expected_figure,
-                  ID, tree, ylim):
+                  ID, tree, ylim,
+                  collapse,
+                  collapse_names,
+                  auto_ax):
     f = plt.figure(figsize=(10, 20))
     a = f.add_subplot(111)
     a.set_xlim(-10, 20)
@@ -330,3 +344,4 @@ def test_bad_tree(xpos,
                               line_col=line_col,
                               line_width=line_width,
                               bold=bold)
+    plt.close()

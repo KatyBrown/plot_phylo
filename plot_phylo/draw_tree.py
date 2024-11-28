@@ -1,35 +1,5 @@
+#!/usr/bin/env python3
 import numpy as np
-
-
-def collapse_nodes(tree, collapse_list, collapse_names):
-    cD = dict(zip(collapse_list, collapse_names))
-    collapseD = dict()
-    for string in collapse_list:
-        keeps = set()
-        collapsed = set()
-        done = set()
-        ddD = dict()
-        for node in tree.traverse():
-            x = 0
-            L = list(node.get_leaves())
-            dd = []
-            for leaf in L:
-                if leaf.name.endswith(string) and leaf not in done:
-                    dd.append(leaf.dist)
-                    x += 1
-            if x == len(L) or (len(L) == 1 and leaf not in done):
-                keeps.add(L[0].name)
-                done = done | set(L)
-                if x > 1:
-                    collapsed.add(L[0])
-                    ddD[L[0]] = np.mean(dd)
-        tree.prune(keeps)
-        for leaf in tree.get_leaves():
-            if leaf in collapsed:
-                leaf.dist = ddD[leaf]
-                leaf.name = 'COLLAPSE|%s' % (leaf.name)
-                collapseD[leaf.name] = cD[string]
-    return (tree, collapseD)
 
 
 def draw_tree(tree, ax,
@@ -306,3 +276,34 @@ def draw_tree(tree, ax,
                         va='center', fontsize=appearance['font_size']-2)
 
         return (y, ym, ps)
+
+
+def collapse_nodes(tree, collapse_list, collapse_names):
+    cD = dict(zip(collapse_list, collapse_names))
+    collapseD = dict()
+    for string in collapse_list:
+        keeps = set()
+        collapsed = set()
+        done = set()
+        ddD = dict()
+        for node in tree.traverse():
+            x = 0
+            L = list(node.get_leaves())
+            dd = []
+            for leaf in L:
+                if leaf.name.endswith(string) and leaf not in done:
+                    dd.append(leaf.dist)
+                    x += 1
+            if x == len(L) or (len(L) == 1 and leaf not in done):
+                keeps.add(L[0].name)
+                done = done | set(L)
+                if x > 1:
+                    collapsed.add(L[0])
+                    ddD[L[0]] = np.mean(dd)
+        tree.prune(keeps)
+        for leaf in tree.get_leaves():
+            if leaf in collapsed:
+                leaf.dist = ddD[leaf]
+                leaf.name = 'COLLAPSE|%s' % (leaf.name)
+                collapseD[leaf.name] = cD[string]
+    return (tree, collapseD)

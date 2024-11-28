@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import ete3
-import draw_tree
-import post_draw
+from . import draw_tree
+from . import amend_tree
 
 
 def plot_phylo(tree, ax,
@@ -163,42 +163,42 @@ name of the
     # internally when the function is called recursively but
     # are not needed by the user
 
-    _, _, ps = draw_tree(T, ax,
-                         x=xpos,
-                         y=-ypos-height,
-                         x0=xpos,
-                         ps=[],
-                         height=height,
-                         width=width,
-                         depth=maxdist,
-                         align_tips=align_tips,
-                         rev_align_tips=rev_align_tips,
-                         branch_lengths=branch_lengths,
-                         reverse=reverse,
-                         appearance=appearance,
-                         collapse=collapse,
-                         collapseD=collapseD)
+    _, _, ps = draw_tree.draw_tree(T, ax,
+                                   x=xpos,
+                                   y=-ypos-height,
+                                   x0=xpos,
+                                   ps=[],
+                                   height=height,
+                                   width=width,
+                                   depth=maxdist,
+                                   align_tips=align_tips,
+                                   rev_align_tips=rev_align_tips,
+                                   branch_lengths=branch_lengths,
+                                   reverse=reverse,
+                                   appearance=appearance,
+                                   collapse=collapse,
+                                   collapseD=collapseD)
 
     if rev_align_tips:
-        ps = post_draw.reverse_align(ax, ps, reverse)
+        ps = amend_tree.reverse_align(ax, ps, reverse)
     # Hide axis
     if not show_axis:
         ax.set_axis_off()
     if scale_bar and branch_lengths:
         if not reverse:
-            post_draw.draw_scale_bar(ax, width, height, maxdist, xpos, ypos,
-                                     scale_bar_width=scale_bar_width,
-                                     appearance=appearance)
+            amend_tree.draw_scale_bar(ax, width, height, maxdist, xpos, ypos,
+                                      scale_bar_width=scale_bar_width,
+                                      appearance=appearance)
         else:
-            post_draw.draw_scale_bar(ax, width, height, maxdist, -xpos, ypos,
-                                     scale_bar_width=scale_bar_width,
-                                     appearance=appearance)
+            amend_tree.draw_scale_bar(ax, width, height, maxdist, -xpos, ypos,
+                                      scale_bar_width=scale_bar_width,
+                                      appearance=appearance)
     textobj = [p[1] for p in ps]
 
     if auto_ax:
-        textobj, ax = post_draw.auto_axis(ax, textobj,
-                                          xpos, ypos,
-                                          width, height, maxdist,
-                                          scale_bar, branch_lengths)
-    boxes = post_draw.get_boxes(ax, textobj)
+        textobj, ax = amend_tree.auto_axis(ax, textobj,
+                                           xpos, ypos,
+                                           width, height, maxdist,
+                                           scale_bar, branch_lengths)
+    boxes = amend_tree.get_boxes(ax, textobj)
     return (boxes)
