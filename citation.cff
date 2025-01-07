@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this repository in your work, please cite:"
+authors:
+  - family-names: Brown
+    given-names: Katy
+    orcid: 0000-0002-8400-6922
+title: "plot_phylo"
+version: v0.0.11
+identifiers:
+  - type: doi
+    value: https://doi.org/10.5281/zenodo.13871592
+date-released: 2024-10-01
+url: "https://github.com/KatyBrown/plot_phylo"
