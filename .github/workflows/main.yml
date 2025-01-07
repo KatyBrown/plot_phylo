@@ -17,8 +17,6 @@ jobs:
           - python-version: "3.6"
             os:  "macos-13"
           - python-version: "3.6"
-            os: "ubuntu-16.04"
-          - python-version: "3.6"
             os: "windows-latest"
           - python-version: "3.7"
             os:  "macos-13"
