@@ -2,8 +2,8 @@
 [![Documentation Status](https://readthedocs.org/projects/plot-phylo/badge/?version=latest)](https://plot-phylo.readthedocs.io/en/latest/?badge=latest)<br>
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)<br>
 ![Python Versions](https://img.shields.io/pypi/pyversions/plot-phylo)<br>
-![PyPI - Version](https://img.shields.io/pypi/v/plot-phylo)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13871592.svg)](https://doi.org/10.5281/zenodo.13871592)
+![PyPI - Version](https://img.shields.io/pypi/v/plot-phylo)<br>
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13871592.svg)](https://doi.org/10.5281/zenodo.13871592)<br>
 [![pyOpenSci Peer-Reviewed](https://pyopensci.org/badges/peer-reviewed.svg)](https://github.com/pyOpenSci/software-review/issues/issue-number)
 
 # plot_phylo
