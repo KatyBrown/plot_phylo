@@ -155,11 +155,9 @@ name of the
 
     # Calculate the total height and width of the original tree
     # in terms of number of nodes, total branch length, number of tips
-    maxdist = [T.get_farthest_leaf(topology_only=True)[1],
-               T.get_farthest_leaf(topology_only=False)[1],
-               len(T)]
-    if maxdist[1] == 0:
-        maxdist[1] = 1
+    maxdist = ((T.get_farthest_leaf(topology_only=True)[1],
+                T.get_farthest_leaf(topology_only=False)[1],
+                len(T)))
 
     # Without branch lengths the tree has a root which appears at position -1,
     # so shift the tree over by one unit

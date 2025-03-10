@@ -76,7 +76,7 @@ def test_plot_phylo_params(xpos,
         pass
     plt.savefig("test_temp/%s_%s.png" % (ID, tree_stem), bbox_inches='tight',
                 dpi=200)
-    plt.close()
+    plt.close('all')
 
     exp = expected_figure.replace(".png", "_%s.png" % tree_stem)
     # Compare the Matplotlib figures as images

@@ -5,7 +5,7 @@ import re
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-VERSIONFILE="plot_phylo/_version.py"
+VERSIONFILE = "plot_phylo/_version.py"
 verstrline = open(VERSIONFILE, "rt").read()
 VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
 mo = re.search(VSRE, verstrline, re.M)
@@ -24,6 +24,7 @@ setuptools.setup(
      long_description_content_type="text/markdown",
      url="https://github.com/KatyBrown/plot_phylo",
      packages=setuptools.find_packages(),
+     package_dir={'plot_phylo': 'plot_phylo'},
      install_requires=['matplotlib', 'ete3'],
      classifiers=[
          "Programming Language :: Python :: 3",

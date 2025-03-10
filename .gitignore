@@ -1,6 +1,6 @@
-__pycache__
+dist/
+man/_build/
+plot_phylo.egg-info/
+plot_phylo/__pycache__/
+tests/__pycache__/
 .coverage
-*~
-dist
-man/_build
-*egg*
