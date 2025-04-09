@@ -7,6 +7,38 @@ def add_leaf(tree, ax, ps,
              appearance,
              structure,
              collapse, collapseD):
+    '''
+    Function to position and label the leaves of the tree.
+
+    Parameters
+    ----------
+    tree : ete3.Tree
+        ete3 Tree object
+    ax : matplotlib.axes._axes.Axes
+        An open matplotlib ax object
+    ps: list
+        Used internally, list of tip labels and x and y positions
+    posi: dict
+        Dictionary with position parameters
+    appearance: dict
+        Dictionary with appearance parameters
+    structure: dict
+        Dictionary with structure parameters
+    collapse: list
+        Collapse nodes where possible based on strings in the list
+    collapseD: dict
+        Dictionary showing which nodes to collapse and the replacement
+        names
+
+    Returns
+    -------
+    y+posi['yint']: int
+        The y-axis position of the leaf
+    y: int
+        Previous position on y axis
+    ps: list
+        Used internally, list of tip labels and x and y positions
+    '''
     x = posi['x']
     y = posi['y']
 
@@ -54,40 +86,20 @@ def add_leaf(tree, ax, ps,
             xxx = posi['xint'] * 0.4
         else:
             xxx = posi['xint'] * 0.2
+        plot_kwargs = {'color': appearance['line_col'],
+                       'lw': appearance['line_width'],
+                       'solid_capstyle': 'butt'}
+
         if not structure['branch_lengths']:
-            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x_tip_pos, x_tip_pos+xxx], [-y, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x, x], [-y+yyy, -y-yyy],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
+            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y], plot_kwargs)
+            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y], plot_kwargs)
+            ax.plot([x_tip_pos, x_tip_pos+xxx], plot_kwargs)
+            ax.plot([x, x], [-y+yyy, -y-yyy], plot_kwargs)
         else:
-            ax.plot([x, x_tip_pos], [-y+yyy, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x, x_tip_pos], [-y-yyy, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x_tip_pos, x_tip_pos], [-y, -y],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
-            ax.plot([x, x], [-y+yyy, -y-yyy],
-                    color=appearance['line_col'],
-                    lw=appearance['line_width'],
-                    solid_capstyle='butt')
+            ax.plot([x, x_tip_pos], [-y+yyy, -y], plot_kwargs)
+            ax.plot([x, x_tip_pos], [-y-yyy, -y], plot_kwargs)
+            ax.plot([x_tip_pos, x_tip_pos], [-y, -y], plot_kwargs)
+            ax.plot([x, x], [-y+yyy, -y-yyy], plot_kwargs)
 
     textpos = ax.text(x_text_pos, -y,
                       "  %s  " % texti,
