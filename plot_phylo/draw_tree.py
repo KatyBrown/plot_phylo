@@ -91,15 +91,17 @@ def add_leaf(tree, ax, ps,
                        'solid_capstyle': 'butt'}
 
         if not structure['branch_lengths']:
-            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y], plot_kwargs)
-            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y], plot_kwargs)
-            ax.plot([x_tip_pos, x_tip_pos+xxx], plot_kwargs)
-            ax.plot([x, x], [-y+yyy, -y-yyy], plot_kwargs)
+            print (plot_kwargs)
+            print (x, x_tip_pos, y, yyy)
+            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y], **plot_kwargs)
+            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y], **plot_kwargs)
+            ax.plot([x_tip_pos, x_tip_pos+xxx], **plot_kwargs)
+            ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
         else:
-            ax.plot([x, x_tip_pos], [-y+yyy, -y], plot_kwargs)
-            ax.plot([x, x_tip_pos], [-y-yyy, -y], plot_kwargs)
-            ax.plot([x_tip_pos, x_tip_pos], [-y, -y], plot_kwargs)
-            ax.plot([x, x], [-y+yyy, -y-yyy], plot_kwargs)
+            ax.plot([x, x_tip_pos], [-y+yyy, -y], **plot_kwargs)
+            ax.plot([x, x_tip_pos], [-y-yyy, -y], **plot_kwargs)
+            ax.plot([x_tip_pos, x_tip_pos], [-y, -y], **plot_kwargs)
+            ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
 
     textpos = ax.text(x_text_pos, -y,
                       "  %s  " % texti,
