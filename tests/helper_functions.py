@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 import matplotlib
+from PIL import Image
 
 
 def compare_images(f1, f2, tol):
@@ -9,7 +10,16 @@ def compare_images(f1, f2, tol):
 
     f1arr_sub = f1arr[500:1500, 500:1500, :]
     f2arr_sub = f2arr[500:1500, 500:1500, :]
-    return np.allclose(f1arr_sub, f2arr_sub, atol=tol)
+    im1 = Image.fromarray((f1arr_sub* 255).astype(np.uint8))
+    im2 = Image.fromarray((f2arr_sub* 255).astype(np.uint8))
+    size1 = np.shape(f1arr)
+    size2 = np.shape(f2arr)
+    t1 = compare_floats(size1[0], size2[0])
+    t2 = compare_floats(size1[1], size2[1])
+    t3 = np.array_equal(f1arr_sub, f2arr_sub)
+    res = t1 & t2 & t3
+    res = t3
+    return res, im1, im2
 
 
 def compare_floats(float1, float2, tolerance=0.05):

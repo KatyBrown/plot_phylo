@@ -80,10 +80,12 @@ def test_plot_phylo_params(xpos,
 
     exp = expected_figure.replace(".png", "_%s.png" % tree_stem)
     # Compare the Matplotlib figures as images
-    result = helper_functions.compare_images(
+    result, f1, f2 = helper_functions.compare_images(
                             "test_temp/%s_%s.png" % (ID, tree_stem),
-                            exp, tol=10)
-    shutil.rmtree("test_temp")
+                            exp, tol=1)
+    f1.save(f"test_temp/f1_{ID}_{tree_stem}_frag.png")
+    f2.save(f"test_temp/f2_{ID}_{tree_stem}_frag.png")
+    # shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result
 

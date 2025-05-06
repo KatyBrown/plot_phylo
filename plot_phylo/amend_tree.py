@@ -145,7 +145,6 @@ def reverse_align(ax, ps, reverse):
         alignment lines (if aligned). All are in the same order. Updated
         based on new alignment.
     '''
-
     x_extremes = []
     ys = []
     # Used to determine which x co-ordinates to take depending on the
