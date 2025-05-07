@@ -196,15 +196,18 @@ name of the
                                       scale_bar_width=scale_bar_width,
                                       appearance=appearance)
         else:
-            amend_tree.draw_scale_bar(ax, width, height, maxdist, -xpos, ypos,
+            amend_tree.draw_scale_bar(ax, width, height, maxdist, -xpos,
+                                      ypos,
                                       scale_bar_width=scale_bar_width,
-                                      appearance=appearance)
-    textobj = [p[1] for p in ps]
+                                      appearance=appearance) 
 
+    textobj = [p[1] for p in ps]
+    boxes = get_boxes.get_boxes(ax, textobj)
     if auto_ax:
         textobj, ax = amend_tree.auto_axis(ax, textobj,
                                            xpos, ypos,
                                            width, height, maxdist,
-                                           scale_bar, branch_lengths)
-    boxes = get_boxes.get_boxes(ax, textobj)
+                                           scale_bar, branch_lengths,
+                                           reverse=reverse)
+    
     return (boxes)

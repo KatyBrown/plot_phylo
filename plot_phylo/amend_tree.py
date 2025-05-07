@@ -6,7 +6,7 @@ except ImportError:
 
 
 def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
-              branch_lengths):
+              branch_lengths, reverse):
     """
     Adjust the axis limits around the tree automatically (rather than
     using user definted values).
@@ -36,21 +36,38 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
     branch_lengths: bool
         User defined - True to use true branch lengths, False to use
         fixed branch lengths
-
+    reverse: bool
+        If True, the tree is reversed on the y-axis,
+        showing the root on the right
+        hand side. Default False.
     """
-    xint = width * 0.1
-    yint = height / depth[2]
+    xint = width * 0.01
+    yint = (height / depth[2])
+    yint_s = yint * 0.1
+ 
+    nboxes = 0
+    cboxes = 1
 
-    ymin = ypos - (yint * 0.5)
-    ymax = ypos + height + (yint * 0.5)
-    if scale_bar:
-        ymin -= yint + (yint * 0.2)
-    ax.set_ylim(ymin, ymax)
-    xmin = xpos - xint
-    nboxes = get_boxes.get_boxes(ax, textobj)
-    xmaxes = [nboxes[x]['xmax'] for x in nboxes]
-    xmax = xint + max(xmaxes)
-    ax.set_xlim(xmin, xmax)
+    while nboxes != cboxes:
+        nboxes = get_boxes.get_boxes(ax, textobj)
+        if not reverse:
+            xmin = xpos - xint
+            xmaxes = [nboxes[x]['xmax'] for x in nboxes]
+            xmax = max(xmaxes) + xint
+        else:
+            xmins = [nboxes[x]['xmin'] for x in nboxes]
+            xmin = min(xmins)
+            xmax = -xpos + width + xint
+        ymaxes = [nboxes[y]['ymax'] for y in nboxes]
+        ymax = max(ymaxes)
+        ymins = [nboxes[y]['ymin'] for y in nboxes]
+        ymin = min(ymins)
+
+        if scale_bar:
+            ymin -= yint
+        ax.set_xlim(min(xmin, xmax)-xint, max(xmin, xmax)+xint)
+        ax.set_ylim(min(ymin, ymax)-yint_s, max(ymin, ymax)+yint_s)
+        cboxes = get_boxes.get_boxes(ax, textobj)
     return (textobj, ax)
 
 
@@ -102,6 +119,7 @@ def draw_scale_bar(ax, width, height, depth, left, bottom,
 
     # Convert the scale bar width to tree units
     scale = scale_bar_width / xint
+
 
     # Draw the horizontal line
     ax.plot([left+interx, left+interx+scale_bar_width],

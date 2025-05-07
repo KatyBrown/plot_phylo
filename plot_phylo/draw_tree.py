@@ -100,7 +100,6 @@ def add_leaf(tree, ax, ps,
             ax.plot([x, x_tip_pos], [-y-yyy, -y], **plot_kwargs)
             ax.plot([x_tip_pos, x_tip_pos], [-y, -y], **plot_kwargs)
             ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
-
     textpos = ax.text(x_text_pos, -y,
                       "  %s  " % texti,
                       color=appearance['col_dict'][tree.name],

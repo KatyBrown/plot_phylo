@@ -104,4 +104,3 @@ def get_draw_tree_metadata():
                        'collapse',
                        'collapseD']
     return (variD, varis_draw_tree)
-
