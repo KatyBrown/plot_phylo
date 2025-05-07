@@ -130,8 +130,20 @@ name of the
     for nam in T.get_leaf_names():
         if nam not in label_dict:
             label_dict[nam] = nam
+        if len(collapse) != 0:
+            for string in collapse:
+                if nam in label_dict:
+                    label_dict[nam.strip(string)] = label_dict[nam]
+                else:
+                    label_dict[nam.strip(string)] = nam.strip(string)
         if nam not in col_dict:
             col_dict[nam] = 'black'
+        if len(collapse) != 0:
+            for string in collapse:
+                if nam in col_dict:
+                    col_dict[nam.strip(string)] = col_dict[nam]
+                else:
+                    col_dict[nam.strip(string)] = 'black'
     # Dictionary to pass apperance params to the plotting function
     appearance = {'font_size': font_size,
                   'line_col': line_col,
