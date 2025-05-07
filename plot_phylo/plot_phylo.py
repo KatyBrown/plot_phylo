@@ -29,7 +29,8 @@ def plot_phylo(tree, ax,
                bold=[],
                collapse=[],
                collapse_names=[],
-               auto_ax=True):
+               auto_ax=True,
+               dots=False):
     '''
     Parameters
     ----------
@@ -122,9 +123,11 @@ name of the
         assert len(collapse) == len(collapse_names), "To collapse nodes the \
             collapse_strings and collapse_names parameters must be lists \
             of equal length"
-        T, collapseD = draw_tree.collapse_nodes(T, collapse, collapse_names)
+        T, collapseD, countD = draw_tree.collapse_nodes(T, collapse,
+                                                        collapse_names)
     else:
         collapseD = dict()
+        countD = dict()
 
     # Define dictionaries for colours and labels if not provided
     for nam in T.get_leaf_names():
@@ -136,14 +139,29 @@ name of the
                     label_dict[nam.strip(string)] = label_dict[nam]
                 else:
                     label_dict[nam.strip(string)] = nam.strip(string)
-        if nam not in col_dict:
-            col_dict[nam] = 'black'
+
         if len(collapse) != 0:
             for string in collapse:
-                if nam in col_dict:
-                    col_dict[nam.strip(string)] = col_dict[nam]
-                else:
-                    col_dict[nam.strip(string)] = 'black'
+                if nam.endswith(string):
+                    stripped = nam.removesuffix(string)
+                    cc = stripped.replace("COLLAPSE|", "")
+                    if nam in col_dict or stripped in col_dict or cc in col_dict:
+                        if nam in col_dict:
+                            col_dict[stripped] = col_dict[nam]
+                            col_dict[f'COLLAPSE|{stripped}'] = col_dict[nam]
+                        elif stripped in col_dict:
+                            col_dict[nam] = col_dict[stripped]
+                            col_dict[f'COLLAPSE|{stripped}'] = col_dict[stripped]
+                        else:
+                            col_dict[nam] = col_dict[cc]
+                            col_dict[stripped] = col_dict[cc]
+                            col_dict[f'COLLAPSE|{stripped}'] = col_dict[cc]
+                    else:
+                        col_dict[stripped] = 'black'
+                        col_dict[f'COLLAPSE|{stripped}'] = 'black'
+                        col_dict[nam] = 'black'
+        if nam not in col_dict:
+            col_dict[nam] = 'black'
     # Dictionary to pass apperance params to the plotting function
     appearance = {'font_size': font_size,
                   'line_col': line_col,
@@ -195,7 +213,9 @@ name of the
                                    structure=structure,
                                    appearance=appearance,
                                    collapse=collapse,
-                                   collapseD=collapseD)
+                                   collapseD=collapseD,
+                                   countD=countD,
+                                   dots=dots)
 
     if rev_align_tips:
         ps = amend_tree.reverse_align(ax, ps, reverse)

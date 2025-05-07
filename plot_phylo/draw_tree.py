@@ -6,7 +6,7 @@ def add_leaf(tree, ax, ps,
              posi,
              appearance,
              structure,
-             collapse, collapseD):
+             collapse, collapseD, countD, dots=False):
     '''
     Function to position and label the leaves of the tree.
 
@@ -69,38 +69,63 @@ def add_leaf(tree, ax, ps,
         bold = 'bold'
     else:
         bold = 'normal'
-
+    adj = 0
     if 'COLLAPSE|' not in tree.name:
         for c in collapse:
-            tree.name = tree.name.strip(c)
+            tree.name = tree.name.removesuffix(c)
         texti = appearance['label_dict'][tree.name]
         # Plot the branch to the tip
+        if dots:
+            ax.scatter(x, -y, s=10,
+                       color=appearance['col_dict'][tree.name])
         ax.plot([x, x_tip_pos], [-posi['y'], -posi['y']],
                 color=appearance['line_col'],
                 lw=appearance['line_width'])
 
     else:
-        texti = collapseD[tree.name]
-        yyy = (posi['yint'] / 2) * 0.8
-        if structure['branch_lengths']:
-            xxx = posi['xint'] * 0.4
+        count = countD[tree.name]
+        texti = f"{collapseD[tree.name]} | {count} Seq"
+        if countD[tree.name] == 1:
+            if dots:
+                ax.scatter(x, -y, s=10,
+                           color=appearance['col_dict'][tree.name])
+            ax.plot([x, x_tip_pos], [-y, -y],
+                    color=appearance['line_col'],
+                    lw=appearance['line_width'])
         else:
-            xxx = posi['xint'] * 0.2
-        plot_kwargs = {'color': appearance['line_col'],
-                       'lw': appearance['line_width'],
-                       'solid_capstyle': 'butt'}
+            texti += "s"
+            if dots:
+                y += posi['yint'] * (count * 0.02)
+                markersize = 10 * count
+                xcent, adj = adjust_dots(ax, x, -y, markersize)
+                ax.scatter(xcent, -y, s=markersize,
+                           color=appearance['col_dict'][tree.name])
+                ax.plot([x, x_tip_pos], [-y, -y],
+                        color=appearance['line_col'],
+                        lw=appearance['line_width'])
+                
+            else:
+                yyy = (posi['yint'] / 2) * 0.8
+                if structure['branch_lengths']:
+                    xxx = posi['xint'] * 0.4
+                else:
+                    xxx = posi['xint'] * 0.2
+                plot_kwargs = {'color': appearance['line_col'],
+                            'lw': appearance['line_width'],
+                            'solid_capstyle': 'butt'}
 
-        if not structure['branch_lengths']:
-            ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y], **plot_kwargs)
-            ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y], **plot_kwargs)
-            ax.plot([x_tip_pos, x_tip_pos+xxx], **plot_kwargs)
-            ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
-        else:
-            ax.plot([x, x_tip_pos], [-y+yyy, -y], **plot_kwargs)
-            ax.plot([x, x_tip_pos], [-y-yyy, -y], **plot_kwargs)
-            ax.plot([x_tip_pos, x_tip_pos], [-y, -y], **plot_kwargs)
-            ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
-    textpos = ax.text(x_text_pos, -y,
+                if not structure['branch_lengths']:
+                    ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y], **plot_kwargs)
+                    ax.plot([x, x_tip_pos+xxx], [-y-yyy, -y], **plot_kwargs)
+                    ax.plot([x_tip_pos, x_tip_pos+xxx], **plot_kwargs)
+                    ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
+                else:
+                    ax.plot([x, x_tip_pos], [-y+yyy, -y], **plot_kwargs)
+                    ax.plot([x, x_tip_pos], [-y-yyy, -y], **plot_kwargs)
+                    ax.plot([x_tip_pos, x_tip_pos], [-y, -y], **plot_kwargs)
+                    ax.plot([x, x], [-y+yyy, -y-yyy], **plot_kwargs)
+
+    textpos = ax.text(x_text_pos+(adj*1.75), -y,
                       "  %s  " % texti,
                       color=appearance['col_dict'][tree.name],
                       fontsize=appearance['font_size'],
@@ -140,7 +165,9 @@ def draw_tree(tree, ax,
                           'show_support': True,
                           'bold': []},
               collapse=[],
-              collapseD=dict()):
+              collapseD=dict(),
+              countD=dict(),
+              dots=False):
     '''
     Plot a phylogenetic tree in matplotlib
 
@@ -226,7 +253,8 @@ def draw_tree(tree, ax,
 
     if tree.is_leaf():
         return add_leaf(tree, ax, ps,
-                        posi, appearance, structure, collapse, collapseD)
+                        posi, appearance, structure, collapse, collapseD,
+                        countD, dots)
 
     else:
         # This section draws the lines for the non-terminal nodes
@@ -252,7 +280,9 @@ def draw_tree(tree, ax,
                                    structure=structure,
                                    appearance=appearance,
                                    collapse=collapse,
-                                   collapseD=collapseD)
+                                   collapseD=collapseD,
+                                   countD=countD,
+                                   dots=dots)
 
             # y1 and y2 are the top and bottom positions of the current
             # child node on the y axis, respectively
@@ -313,11 +343,13 @@ def draw_tree(tree, ax,
 def collapse_nodes(tree, collapse_list, collapse_names):
     cD = dict(zip(collapse_list, collapse_names))
     collapseD = dict()
+    countD = dict()
     for string in collapse_list:
         keeps = set()
         collapsed = set()
         done = set()
         ddD = dict()
+        xD = dict()
         for node in tree.traverse():
             x = 0
             L = list(node.get_leaves())
@@ -329,13 +361,32 @@ def collapse_nodes(tree, collapse_list, collapse_names):
             if x == len(L) or (len(L) == 1 and leaf not in done):
                 keeps.add(L[0].name)
                 done = done | set(L)
-                if x > 1:
+                if x > 0:
                     collapsed.add(L[0])
                     ddD[L[0]] = np.mean(dd)
+                    xD[L[0].name] = x
         tree.prune(keeps)
+
         for leaf in tree.get_leaves():
             if leaf in collapsed:
                 leaf.dist = ddD[leaf]
+                pnam = leaf.name
                 leaf.name = 'COLLAPSE|%s' % (leaf.name)
                 collapseD[leaf.name] = cD[string]
-    return (tree, collapseD)
+                countD[leaf.name] = xD[pnam]
+
+    return (tree, collapseD, countD)
+
+
+def adjust_dots(ax, xpos, ypos, markersize):
+    fig = ax.figure
+    fig.canvas.draw()
+    adj = (markersize ** 0.5) * 2
+    display_coords = ax.transData.transform((xpos, ypos))
+    centre = display_coords + np.array([adj, 0])
+    rcoords = ax.transData.transform((0, 0))
+    adj_cent = rcoords + np.array([adj, 0])
+    # Convert back to data coords
+    x_centre, y_centre = ax.transData.inverted().transform(centre)
+    adj_new, y_new = ax.transData.inverted().transform(adj_cent)
+    return (x_centre, adj_new)
