@@ -95,7 +95,7 @@ def add_leaf(tree, ax, ps,
         else:
             texti += "s"
             if dots:
-                y += posi['yint'] * (count * 0.02)
+                y += posi['yint'] * (count * 0.01)
                 markersize = 10 * count
                 xcent, adj = adjust_dots(ax, x, -y, markersize)
                 ax.scatter(xcent, -y, s=markersize,
