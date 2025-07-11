@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import matplotlib
 import matplotlib.pyplot as plt
-from PIL import Image
 matplotlib.use('Agg')
 plt.rcParams.update({
     'font.family': 'DejaVu Sans',  # Or another reliable cross-platform font

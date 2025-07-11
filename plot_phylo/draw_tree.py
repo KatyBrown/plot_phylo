@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import numpy as np
+import statistics
 
 
 def add_leaf(tree, ax, ps,
@@ -363,7 +363,7 @@ def collapse_nodes(tree, collapse_list, collapse_names):
                 done = done | set(L)
                 if x > 0:
                     collapsed.add(L[0])
-                    ddD[L[0]] = np.mean(dd)
+                    ddD[L[0]] = statistics.mean(dd)
                     xD[L[0].name] = x
         tree.prune(keeps)
 
@@ -383,9 +383,9 @@ def adjust_dots(ax, xpos, ypos, markersize):
     fig.canvas.draw()
     adj = (markersize ** 0.5) * 2
     display_coords = ax.transData.transform((xpos, ypos))
-    centre = display_coords + np.array([adj, 0])
+    centre = display_coords + [adj, 0]
     rcoords = ax.transData.transform((0, 0))
-    adj_cent = rcoords + np.array([adj, 0])
+    adj_cent = rcoords + [adj, 0]
     # Convert back to data coords
     x_centre, y_centre = ax.transData.inverted().transform(centre)
     adj_new, y_new = ax.transData.inverted().transform(adj_cent)

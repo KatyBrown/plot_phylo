@@ -14,7 +14,7 @@ matplotlib.use('Agg')
 
 plt.rcParams.update({
     'font.family': 'DejaVu Sans',
-    'figure.dpi': 100 # Set a fixed DPI
+    'figure.dpi': 100
 })
 
 
