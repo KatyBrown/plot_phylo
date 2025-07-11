@@ -11,10 +11,11 @@ import matplotlib
 from matplotlib.testing.compare import compare_images
 matplotlib.use('Agg')
 
-
-plt.rcParams.update({
+matplotlib.rcParams.update({
     'font.family': 'DejaVu Sans',
-    'figure.dpi': 100
+    'savefig.bbox': 'standard',
+    'savefig.pad_inches': 0,
+    'figure.dpi': 100,
 })
 
 
@@ -80,7 +81,7 @@ def test_plot_phylo_params(xpos,
         os.mkdir("test_temp")
     except FileExistsError:
         pass
-    plt.savefig("test_temp/%s_%s.png" % (ID, tree_stem), bbox_inches='tight',
+    plt.savefig("test_temp/%s_%s.png" % (ID, tree_stem),
                 dpi=200)
     plt.close('all')
 
@@ -89,7 +90,7 @@ def test_plot_phylo_params(xpos,
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
                             exp, tol=30)
 
-    shutil.rmtree("test_temp")
+    #shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result is None
 

@@ -12,10 +12,11 @@ import helper_functions
 import matplotlib
 matplotlib.use('Agg')
 
-
-plt.rcParams.update({
+matplotlib.rcParams.update({
     'font.family': 'DejaVu Sans',
-    'figure.dpi': 100              # Set a fixed DPI
+    'savefig.bbox': 'standard',
+    'savefig.pad_inches': 0,
+    'figure.dpi': 100,
 })
 
 

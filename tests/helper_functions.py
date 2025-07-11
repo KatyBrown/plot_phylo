@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import matplotlib
-import matplotlib.pyplot as plt
 matplotlib.use('Agg')
-plt.rcParams.update({
-    'font.family': 'DejaVu Sans',  # Or another reliable cross-platform font
-    'figure.dpi': 100              # Set a fixed DPI
+
+
+matplotlib.rcParams.update({
+    'font.family': 'DejaVu Sans',
+    'savefig.bbox': 'standard',
+    'savefig.pad_inches': 0,
+    'figure.dpi': 100,
 })
 
 
