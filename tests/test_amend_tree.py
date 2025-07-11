@@ -81,7 +81,6 @@ def test_reverse_align_params(x,
             row += x2
             row += y2
         test_dat += row
-
     expected_obj = pickle.load(open(e0, "rb"))
     ll = 0
     for z1, z2 in zip(expected_obj, test_dat):
