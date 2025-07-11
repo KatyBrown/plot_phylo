@@ -7,7 +7,15 @@ from test_plot_phylo_data import (test_plot_phylo_vars,
                                   test_plot_phylo_nams)
 import os
 import shutil
-import helper_functions
+import matplotlib
+from matplotlib.testing.compare import compare_images
+matplotlib.use('Agg')
+
+
+plt.rcParams.update({
+    'font.family': 'DejaVu Sans',
+    'figure.dpi': 100              # Set a fixed DPI
+})
 
 
 # Tests all parameters with plot_phylo with three different trees
@@ -45,8 +53,6 @@ def test_plot_phylo_params(xpos,
 
     f = plt.figure(figsize=(10, 20))
     a = f.add_subplot(111)
-    a.set_xlim(-10, 20)
-    a.set_ylim(-1, ylim)
     plot_phylo.plot_phylo(tree=tree, ax=a,
                           xpos=xpos,
                           ypos=ypos,
@@ -80,14 +86,12 @@ def test_plot_phylo_params(xpos,
 
     exp = expected_figure.replace(".png", "_%s.png" % tree_stem)
     # Compare the Matplotlib figures as images
-    result, f1, f2 = helper_functions.compare_images(
-                            "test_temp/%s_%s.png" % (ID, tree_stem),
-                            exp, tol=1)
-    f1.save(f"test_temp/f1_{ID}_{tree_stem}_frag.png")
-    f2.save(f"test_temp/f2_{ID}_{tree_stem}_frag.png")
-    # shutil.rmtree("test_temp")
+    result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
+                            exp, tol=0.01)
+
+    shutil.rmtree("test_temp")
     # Assert that the images are similar
-    assert result
+    assert result is None
 
 
 @pytest.mark.parametrize(test_plot_phylo_vars,
@@ -119,8 +123,6 @@ def test_bad_tree(xpos,
                   auto_ax):
     f = plt.figure(figsize=(10, 20))
     a = f.add_subplot(111)
-    a.set_xlim(-10, 20)
-    a.set_ylim(-1, ylim)
     with pytest.raises(RuntimeError,
                        match="Error in parsing Newick"):
         plot_phylo.plot_phylo(tree=tree, ax=a,

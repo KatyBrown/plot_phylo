@@ -8,6 +8,14 @@ import pytest
 import ete3
 import pickle
 import helper_functions
+import matplotlib
+matplotlib.use('Agg')
+
+
+plt.rcParams.update({
+    'font.family': 'DejaVu Sans',
+    'figure.dpi': 100              # Set a fixed DPI
+})
 
 
 @pytest.mark.parametrize(test_rev_align_vars,

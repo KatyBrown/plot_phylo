@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 import numpy as np
 import matplotlib
+import matplotlib.pyplot as plt
 from PIL import Image
+matplotlib.use('Agg')
+plt.rcParams.update({
+    'font.family': 'DejaVu Sans',  # Or another reliable cross-platform font
+    'figure.dpi': 100              # Set a fixed DPI
+})
 
 
 def compare_images(f1, f2, tol):
@@ -10,8 +16,8 @@ def compare_images(f1, f2, tol):
 
     f1arr_sub = f1arr[500:1500, 500:1500, :]
     f2arr_sub = f2arr[500:1500, 500:1500, :]
-    im1 = Image.fromarray((f1arr_sub* 255).astype(np.uint8))
-    im2 = Image.fromarray((f2arr_sub* 255).astype(np.uint8))
+    im1 = Image.fromarray((f1arr_sub * 255).astype(np.uint8))
+    im2 = Image.fromarray((f2arr_sub * 255).astype(np.uint8))
     size1 = np.shape(f1arr)
     size2 = np.shape(f2arr)
     t1 = compare_floats(size1[0], size2[0])
