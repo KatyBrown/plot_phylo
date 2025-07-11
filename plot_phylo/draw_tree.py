@@ -103,7 +103,7 @@ def add_leaf(tree, ax, ps,
                 ax.plot([x, x_tip_pos], [-y, -y],
                         color=appearance['line_col'],
                         lw=appearance['line_width'])
-                
+
             else:
                 yyy = (posi['yint'] / 2) * 0.8
                 if structure['branch_lengths']:
@@ -111,8 +111,8 @@ def add_leaf(tree, ax, ps,
                 else:
                     xxx = posi['xint'] * 0.2
                 plot_kwargs = {'color': appearance['line_col'],
-                            'lw': appearance['line_width'],
-                            'solid_capstyle': 'butt'}
+                               'lw': appearance['line_width'],
+                               'solid_capstyle': 'butt'}
 
                 if not structure['branch_lengths']:
                     ax.plot([x, x_tip_pos+xxx], [-y+yyy, -y], **plot_kwargs)

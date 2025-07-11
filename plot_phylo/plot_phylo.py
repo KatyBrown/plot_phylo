@@ -141,13 +141,15 @@ name of the
                 if nam.endswith(string):
                     stripped = nam.removesuffix(string)
                     cc = stripped.replace("COLLAPSE|", "")
-                    if nam in col_dict or stripped in col_dict or cc in col_dict:
+                    if nam in col_dict or \
+                            stripped in col_dict or cc in col_dict:
                         if nam in col_dict:
                             col_dict[stripped] = col_dict[nam]
                             col_dict[f'COLLAPSE|{stripped}'] = col_dict[nam]
                         elif stripped in col_dict:
                             col_dict[nam] = col_dict[stripped]
-                            col_dict[f'COLLAPSE|{stripped}'] = col_dict[stripped]
+                            col_dict[f'COLLAPSE|{stripped}'] = \
+                                col_dict[stripped]
                         else:
                             col_dict[nam] = col_dict[cc]
                             col_dict[stripped] = col_dict[cc]
@@ -227,7 +229,7 @@ name of the
             amend_tree.draw_scale_bar(ax, width, height, maxdist, -xpos,
                                       ypos,
                                       scale_bar_width=scale_bar_width,
-                                      appearance=appearance) 
+                                      appearance=appearance)
 
     textobj = [p[1] for p in ps]
     boxes = get_boxes.get_boxes(ax, textobj)
@@ -237,5 +239,5 @@ name of the
                                            width, height, maxdist,
                                            scale_bar, branch_lengths,
                                            reverse=reverse)
-    
+
     return (boxes)
