@@ -67,7 +67,8 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
         ax.set_xlim(min(xmin, xmax)-xint, max(xmin, xmax)+xint)
         ax.set_ylim(min(ymin, ymax), max(ymin, ymax))
         cboxes = get_boxes.get_boxes(ax, textobj)
-    return (textobj, ax)
+    ax.set_autoscale_on(False)
+    return (cboxes, ax)
 
 
 def draw_scale_bar(ax, width, height, depth, left, bottom,

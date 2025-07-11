@@ -220,8 +220,6 @@ name of the
                                    countD=countD,
                                    dots=dots)
 
-    if rev_align_tips:
-        ps = amend_tree.reverse_align(ax, ps, reverse)
     # Hide axis
     if not show_axis:
         ax.set_axis_off()
@@ -239,10 +237,12 @@ name of the
     textobj = [p[1] for p in ps]
     boxes = get_boxes.get_boxes(ax, textobj)
     if auto_ax:
-        textobj, ax = amend_tree.auto_axis(ax, textobj,
-                                           xpos, ypos,
-                                           width, height, maxdist,
-                                           scale_bar, branch_lengths,
-                                           reverse=reverse)
-
+        boxes, ax = amend_tree.auto_axis(ax, textobj,
+                                         xpos, ypos,
+                                         width, height, maxdist,
+                                         scale_bar, branch_lengths,
+                                         reverse=reverse)
+    ax.set_autoscale_on(False)
+    if rev_align_tips:
+        ps = amend_tree.reverse_align(ax, ps, reverse)
     return (boxes)
