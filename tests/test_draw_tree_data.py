@@ -10,13 +10,14 @@ tests_draw_tree = [{},
                    {'structure_rev_align_tips': True},
                    {'structure_branch_lengths': False},
                    {'structure_reverse': True},
-                   {'appearance_col_dict': {'Homo sapiens': 'blue'}},
+                   {'appearance_col_dict': {'Homo sapiens': 'blue',
+                                            'A': 'blue'}},
                    {'appearance_label_dict': {'Homo sapiens': 'human'}},
                    {'appearance_font_size': 20},
                    {'appearance_line_col': 'orange'},
                    {'appearance_line_width': 5},
                    {'appearance_show_support': True},
-                   {'appearance_bold': ['Homo sapiens']}]
+                   {'appearance_bold': ['Homo sapiens', 'A']}]
 
 
 test_draw_tree_list = []

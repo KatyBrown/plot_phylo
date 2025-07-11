@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 import ete3
-import sys
-sys.path.insert(0, "/home/katy/plot_phylo/plot_phylo")
-import draw_tree
-import amend_tree
-import get_boxes
+from plot_phylo import draw_tree, amend_tree, get_boxes
 
 
 def plot_phylo(tree, ax,

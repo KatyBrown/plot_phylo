@@ -43,8 +43,7 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
     """
     xint = width * 0.01
     yint = (height / depth[2])
-    yint_s = yint * 0.1
- 
+
     nboxes = 0
     cboxes = 1
 
@@ -119,7 +118,6 @@ def draw_scale_bar(ax, width, height, depth, left, bottom,
 
     # Convert the scale bar width to tree units
     scale = scale_bar_width / xint
-
 
     # Draw the horizontal line
     ax.plot([left+interx, left+interx+scale_bar_width],
