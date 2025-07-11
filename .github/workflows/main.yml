@@ -65,4 +65,13 @@ jobs:
       - name: Run tests (for macOS and Windows)
         if: runner.os != 'Linux'
         run: pytest
+      - name: Upload failed image diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-image-diffs-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            tests/test_images/*-failed-*.png
+            tests/test_images/*-expected.png
+            tests/test_images/*-actual.png
 
