@@ -47,7 +47,7 @@ def test_reverse_align_params(x,
             raise RuntimeError(f"Error in parsing Newick format: {e}")
     tree_stem = tree.split("/")[-1].split(".")[0]
 
-    f = plt.figure(figsize=(10, 20))
+    f = plt.figure(figsize=(10, 20), dpi=100)
     a = f.add_subplot(111)
     a.set_xlim(-10, 20)
     a.set_ylim(-1, ylim)

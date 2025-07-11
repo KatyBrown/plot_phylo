@@ -51,7 +51,7 @@ def test_plot_phylo_params(xpos,
 
     tree_stem = tree.split("/")[-1].split(".")[0]
 
-    f = plt.figure(figsize=(10, 20))
+    f = plt.figure(figsize=(10, 20), dpi=100)
     a = f.add_subplot(111)
     plot_phylo.plot_phylo(tree=tree, ax=a,
                           xpos=xpos,
@@ -121,7 +121,7 @@ def test_bad_tree(xpos,
                   collapse,
                   collapse_names,
                   auto_ax):
-    f = plt.figure(figsize=(10, 20))
+    f = plt.figure(figsize=(10, 20), dpi=100)
     a = f.add_subplot(111)
     with pytest.raises(RuntimeError,
                        match="Error in parsing Newick"):
