@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 import ete3
-from plot_phylo import draw_tree, amend_tree, get_boxes
+try:
+    from plot_phylo import draw_tree, amend_tree, get_boxes
+except ImportError:
+    import draw_tree
+    import amend_tree
+    import get_boxes
 
 
 def plot_phylo(tree, ax,
