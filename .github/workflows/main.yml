@@ -31,6 +31,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip uninstall -y numpy || true
+          pip install numpy
           pip install --no-cache-dir -r requirements.txt
           pip install pytest flake8
           pip3 install -e .
