@@ -77,6 +77,7 @@ def test_draw_tree_params(x,
         row += [round(x, 2), round(y, 2)]
         row += [v[1].get_text()]
         test_dat += row
+
     e0 = expected.replace(".pickle", "_%s.pickle" % tree_stem)
     expected_obj = pickle.load(open(e0, "rb"))
     ll = 0

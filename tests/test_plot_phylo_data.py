@@ -16,7 +16,7 @@ tests_plot_phylo = [{},
                     {'rev_align_tips': True, 'reverse': True},
                     {'col_dict': {'Homo sapiens': 'blue'}},
                     {'label_dict': {'Homo sapiens': 'human'}},
-                    {'font_size': 20},
+                    {'font_size': 6},
                     {'line_col': 'orange'},
                     {'line_width': 5},
                     {'bold': ['Homo sapiens']}]

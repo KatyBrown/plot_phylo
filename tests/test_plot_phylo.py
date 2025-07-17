@@ -90,7 +90,7 @@ def test_plot_phylo_params(xpos,
     result = compare_images("test_temp/%s_%s.png" % (ID, tree_stem),
                             exp, tol=30)
 
-    #shutil.rmtree("test_temp")
+    shutil.rmtree("test_temp")
     # Assert that the images are similar
     assert result is None
 
