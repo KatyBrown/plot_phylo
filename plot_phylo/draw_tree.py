@@ -355,7 +355,7 @@ def collapse_nodes(tree, collapse_list, collapse_names):
             L = list(node.get_leaves())
             dd = []
             for leaf in L:
-                if leaf.name.endswith(string) and leaf not in done:
+                if string in leaf.name and leaf not in done:
                     dd.append(leaf.dist)
                     x += 1
             if x == len(L) or (len(L) == 1 and leaf not in done):

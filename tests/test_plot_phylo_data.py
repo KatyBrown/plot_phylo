@@ -19,7 +19,9 @@ tests_plot_phylo = [{},
                     {'font_size': 6},
                     {'line_col': 'orange'},
                     {'line_width': 5},
-                    {'bold': ['Homo sapiens']}]
+                    {'bold': ['Homo sapiens']},
+                    {'collapse': ['Saimiri', 'Callithrix', 'Microcebus'],
+                     'collapse_names': ['S', 'C', 'M'], 'font_size': 6}]
 
 test_plot_phylo_list = []
 test_plot_phylo_nams = []
