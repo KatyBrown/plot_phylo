@@ -25,10 +25,15 @@ def add_leaf(tree, ax, ps,
     structure: dict
         Dictionary with structure parameters
     collapse: list
-        Collapse nodes where possible based on strings in the list
+        List of strings to search for in the tip labels of monophyletic clades
+        and collapse if the string is found in all labels
     collapseD: dict
         Dictionary showing which nodes to collapse and the replacement
         names
+    countD: dict
+        Dictionary of how many leaves are represented by collapsed nodes
+    dots: bool
+        Not yet implemented
 
     Returns
     -------
@@ -206,7 +211,10 @@ def draw_tree(tree, ax,
         Dictionary of parameters specifying the appearance of the tree.
     collapse: list
         Collapse nodes where possible based on strings in the list.
-
+    collapseD:
+        Dictionary where keys are the edited names of the leafs representing
+        collapsed nodes and values are the new name this collapsed node
+        should be given in the tree.
     Returns
     -------
     y   float
@@ -341,6 +349,35 @@ def draw_tree(tree, ax,
 
 
 def collapse_nodes(tree, collapse_list, collapse_names):
+    '''
+    Function to collapse monophyletiic groups in which all tip labels contain
+    a particular strings. Works by replacing the node with one of its
+    leaves and setting the branch length to the mean for the clade.
+
+    Parameters
+    ----------
+    tree : ete3.Tree
+        ete3 Tree object
+    collapse_list: list
+        List of strings to search for in the tip labels of monophyletic clades
+        and collapse if the string is found in all labels
+    collapse_names: list
+        Names, in the same order as collapse, for the collapsed nodes from
+        the collapse list
+
+    Returns
+    -------
+    tree: ete3.Tree
+        The edited tree object with COLLAPSE in the relevant leaf names
+    collapseD: dict
+        Dictionary where keys are the edited names of the leafs representing
+        collapsed nodes and values are the new name this collapsed node
+        should be given in the tree.
+    countD: dict
+        Dictionary showing how many leaves are represented by each collapsed
+        node
+
+    '''
     cD = dict(zip(collapse_list, collapse_names))
     collapseD = dict()
     countD = dict()
@@ -352,25 +389,33 @@ def collapse_nodes(tree, collapse_list, collapse_names):
         xD = dict()
         for node in tree.traverse():
             x = 0
+            # Get all the leaf names
             L = list(node.get_leaves())
             dd = []
+            # Track which have the string and their branch lengths
             for leaf in L:
                 if string in leaf.name and leaf not in done:
                     dd.append(leaf.dist)
                     x += 1
+            # If all the leaves have the string
             if x == len(L) or (len(L) == 1 and leaf not in done):
                 keeps.add(L[0].name)
                 done = done | set(L)
                 if x > 0:
+                    # Pick one leaf
                     collapsed.add(L[0])
+                    # Find the mean branch length
                     ddD[L[0]] = statistics.mean(dd)
                     xD[L[0].name] = x
+        # Prune to keep one leaf from each collapsed clade
         tree.prune(keeps)
 
+        # Make the new collapsed branches
         for leaf in tree.get_leaves():
             if leaf in collapsed:
                 leaf.dist = ddD[leaf]
                 pnam = leaf.name
+                # Rename as COLLAPSE plus the original name
                 leaf.name = 'COLLAPSE|%s' % (leaf.name)
                 collapseD[leaf.name] = cD[string]
                 countD[leaf.name] = xD[pnam]
@@ -379,6 +424,9 @@ def collapse_nodes(tree, collapse_list, collapse_names):
 
 
 def adjust_dots(ax, xpos, ypos, markersize):
+    '''
+    Currently not fully implemented
+    '''
     fig = ax.figure
     fig.canvas.draw()
     adj = (markersize ** 0.5) * 2

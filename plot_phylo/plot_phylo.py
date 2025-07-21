@@ -100,12 +100,19 @@ name of the
     bold: list
         List of tip labels to show in bold.
 
-
+    collapse: list
+        List of strings to search for in the tip labels of monophyletic clades
+        and collapse if the string is found in all labels
+    collapse_names: list
+        Names, in the same order as collapse, for the collapsed nodes from
+        the collapse list
+    auto_ax: bool
+        If True, determine axis limits automatically
     Returns
     -------
-    ps : list
-        List of lists - ordered as tip labels, tip label text objects,
-        alignment lines (if aligned). All are in the same order.
+    boxes : dict
+        Dictionary where keys are tip labels and values are the boundary
+        box on the image of each tip label.
     '''
     # Read the tree
     try:
@@ -178,7 +185,7 @@ name of the
                  'rev_align_tips': rev_align_tips,
                  'branch_lengths': branch_lengths,
                  'reverse': reverse}
-
+    # Set basic axis limits
     if auto_ax:
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 10)
@@ -224,6 +231,7 @@ name of the
     if not show_axis:
         ax.set_axis_off()
     if scale_bar and branch_lengths:
+        # Add scale bars if needed
         if not reverse:
             amend_tree.draw_scale_bar(ax, width, height, maxdist, xpos, ypos,
                                       scale_bar_width=scale_bar_width,
@@ -235,6 +243,7 @@ name of the
                                       appearance=appearance)
 
     textobj = [p[1] for p in ps]
+    # Determine the boundary boxes for the tip labels
     boxes = get_boxes.get_boxes(ax, textobj)
     if auto_ax:
         boxes, ax = amend_tree.auto_axis(ax, textobj,
@@ -242,7 +251,9 @@ name of the
                                          width, height, maxdist,
                                          scale_bar, branch_lengths,
                                          reverse=reverse)
+    # Helps positions not move if mpl adjust the plot
     ax.set_autoscale_on(False)
+    # Move the tip labels if reverse_align is true
     if rev_align_tips:
         ps = amend_tree.reverse_align(ax, ps, reverse)
     return (boxes)

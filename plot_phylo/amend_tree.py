@@ -40,6 +40,13 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
         If True, the tree is reversed on the y-axis,
         showing the root on the right
         hand side. Default False.
+    Returns
+    -------
+    cboxes: dict
+        Dictionary where keys are tip labels and values are the boundary
+        boxes of the tip labels on the plot
+    ax: matplotlib.axes._axes.Axes
+        A modified open matplotlib ax object
     """
     xint = width * 0.01
     yint = (height / depth[2])
@@ -47,6 +54,8 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
     nboxes = 0
     cboxes = 1
 
+    # mpl adjusts the positions of the plot elments when the axis limits are
+    # changed - keep updating until the boxes stop moving
     while nboxes != cboxes:
         nboxes = get_boxes.get_boxes(ax, textobj)
         if not reverse:
@@ -83,6 +92,7 @@ def draw_scale_bar(ax, width, height, depth, left, bottom,
     Parameters
     ----------
     ax : matplotlib.axes._axes.Axes
+        An open matplotlib ax objectmatplotlib.axes._axes.Axes
         An open matplotlib ax object
 
     height : float
