@@ -75,8 +75,7 @@ def plot_phylo(tree, ax,
         hand side. Default False.
     outgroup: str
         Leaf to use as an outgroup, must be identical to the     print (tree)
-name of the
-        leaf in the tree file.
+        name of the leaf in the tree file.
     col_dict : dict
         User provided dictionary with tip labels as keys and colours
         (in any format accepted by matplotlib
@@ -99,7 +98,6 @@ name of the
         Line width. Default 2.
     bold: list
         List of tip labels to show in bold.
-
     collapse: list
         List of strings to search for in the tip labels of monophyletic clades
         and collapse if the string is found in all labels
@@ -108,11 +106,13 @@ name of the
         the collapse list
     auto_ax: bool
         If True, determine axis limits automatically
+
     Returns
     -------
     boxes : dict
         Dictionary where keys are tip labels and values are the boundary
         box on the image of each tip label.
+
     '''
     # Read the tree
     try:

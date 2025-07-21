@@ -22,6 +22,7 @@ def get_boxes(ax, texts):
         maximum and central position of the text box on the x and y axis,
         as index, xmin, xmid, xmax and ymin, ymid and ymax.
 
+
     '''
     boxpos = dict()
     # Iterate through the tip labels

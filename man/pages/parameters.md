@@ -13,6 +13,7 @@ Detailed descriptions of all parameters are provided below.
 * [ypos](#ypos) - y-axis position
 * [height](#height) - tree height
 * [width](#width) - tree width
+* [auto_ax](#auto-ax) - determine axis limits automatically?
 
 *Visualisation options*
 
@@ -31,6 +32,7 @@ Detailed descriptions of all parameters are provided below.
 * [line_col](#line-col) - set line colour
 * [line_width](#line-width) - set line width
 * [bold](#bold) - highlight tip labels in bold
+* [collapse](#collapse) - collapse clades based on a string
 
 The primate tree used in these examples is from the [10K trees](https://10ktrees.nunn-lab.org/) project and is illustrative only.
 
@@ -139,7 +141,7 @@ height_val = 5
 width_val = 20
 
 # Run the plot_phylo function with these values
-results = plot_phylo.plot_phylo("examples/primates.nw", ax, xpos=xpos_val, ypos=ypos_val, height=height_val, width=width_val, show_axis=True, branch_lengths=False)
+results = plot_phylo.plot_phylo("examples/primates.nw", ax, xpos=xpos_val, ypos=ypos_val, height=height_val, width=width_val, show_axis=True, branch_lengths=False, auto_ax=False)
 
 # Annotate these points on the tree using matplotlib functions
 # Mark the bottom left corner
@@ -187,8 +189,13 @@ Desired height of the tree, in axis units. Regardless of the height of the axis,
 
 ### `width`
 (`float`, Default 10)
-
 Desired width of the tree, in axis units. Default 10.
+
+### `auto-ax`
+(`bool`, Default True)
+
+If True, axis limits are determined automatically to best visualise the tree. If False, the user should determine the axis limits directly using matplotlib functionality. Axis limits can still be adjusted later if auto_ax is True.
+
 
 ## Visualisation Options
 ### `show_axis`
@@ -370,3 +377,40 @@ plt.savefig("examples/bold.png", bbox_inches='tight')
 ```
   
 ![Bold](./examples/bold.png "Bold")
+
+### `collapse`
+(`list`, Default `[]`)
+### `collapse_names`
+(`list`, Default `[]`)
+
+Two parameters - collapse and collapse_names are used to allow monophyletic groups to be collapsed, if all tip labels within that clade contain a specific string.
+The parameter `collapse` should be a list of strings to look for e.g.
+`['Saimiri', 'Callithrix']`
+
+The parameter `collapse_names` is a list, in the same order, of the new names to give to the
+collapsed groups, e.g. `['Saimiri species', 'Callithrix species']`.
+
+With the default settings plus `outgroup='Lemur_catta'`
+
+```
+f = plt.figure(figsize=(10, 8))
+ax = f.add_subplot()
+plot_phylo.plot_phylo("%s/examples/big_tree_collapse.nw" % path, ax, outgroup='Lemur_catta')
+plt.savefig("examples/collapse_before.png", dpi=300)
+```
+![Collapse before](./examples/collapse_before.png "Collapse before")
+
+
+With `collapse=['Eulemur', 'Hapalemur'], collapse_names=['Hapalemur species', 'Eulemur species'], outgroup='Lemur_catta'`
+```
+f = plt.figure(figsize=(10, 8))
+ax = f.add_subplot()
+plot_phylo.plot_phylo("%s/examples/big_tree_collapse.nw" % path, ax,
+                        outgroup='Lemur_catta',
+                        collapse=['Eulemur', 'Hapalemur'],
+                        collapse_names=['Eulemur species', 'Hapalemur species'])
+plt.savefig("examples/collapse_after.png", dpi=300)
+```
+
+![Collapse after](./examples/collapse_after.png "Collapse after")
+

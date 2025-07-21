@@ -224,6 +224,7 @@ def draw_tree(tree, ax,
     ps  list
         List of lists - ordered as tip labels, tip label text objects,
         alignment lines (if aligned). All are in the same order.
+
     '''
     # This is the increment for the position of each terminal node on
     # the y axis.
