@@ -26,7 +26,6 @@ setuptools.setup(
      packages=setuptools.find_packages(),
      package_dir={'plot_phylo': 'plot_phylo'},
      install_requires=['matplotlib', 'ete3'],
-     scripts=['plot_phylo/plot_phylo.py'],
      classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",
