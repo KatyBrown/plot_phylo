@@ -38,7 +38,7 @@ def plot_phylo(tree, ax,
     tree : str
         Either the path to a newick formatted tree or a string containing
         a newick formatted tree. Required.
-    ax : matplotlib.axes._axes.Axes,
+    ax : matplotlib.axes._axes.Axes
         An open matplotlib ax object where the tree will be plotted. Required.
     xpos : float
         Desired position of the root node of the tree on the x axis of ax,
@@ -74,7 +74,7 @@ def plot_phylo(tree, ax,
         If True, reverse the tree on the y-axis, showing the root on the right
         hand side. Default False.
     outgroup: str
-        Leaf to use as an outgroup, must be identical to the     print (tree)
+        Leaf to use as an outgroup, must be identical to the
         name of the leaf in the tree file.
     col_dict : dict
         User provided dictionary with tip labels as keys and colours
@@ -83,7 +83,7 @@ def plot_phylo(tree, ax,
         as values. If this is not
         specified all labels will be black, if only some labels are specified
         all others will be black.
-    label_dict : TYPE, optional
+    label_dict: dict
         User provided dictionary with current tip labels as keys and desired
         tip labels as values. If this is not specified all labels
         will be as specified in the newick, if some labels are specified

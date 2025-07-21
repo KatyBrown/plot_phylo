@@ -215,6 +215,7 @@ def draw_tree(tree, ax,
         Dictionary where keys are the edited names of the leafs representing
         collapsed nodes and values are the new name this collapsed node
         should be given in the tree.
+
     Returns
     -------
     y   float
@@ -226,6 +227,7 @@ def draw_tree(tree, ax,
         alignment lines (if aligned). All are in the same order.
 
     '''
+
     # This is the increment for the position of each terminal node on
     # the y axis.
     # The number of nodes - 1 is used because one branch will be at position 0
@@ -379,6 +381,7 @@ def collapse_nodes(tree, collapse_list, collapse_names):
         node
 
     '''
+
     cD = dict(zip(collapse_list, collapse_names))
     collapseD = dict()
     countD = dict()
@@ -427,7 +430,9 @@ def collapse_nodes(tree, collapse_list, collapse_names):
 def adjust_dots(ax, xpos, ypos, markersize):
     '''
     Currently not fully implemented
+
     '''
+
     fig = ax.figure
     fig.canvas.draw()
     adj = (markersize ** 0.5) * 2

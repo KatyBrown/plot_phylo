@@ -40,6 +40,7 @@ def auto_axis(ax, textobj, xpos, ypos, width, height, depth, scale_bar,
         If True, the tree is reversed on the y-axis,
         showing the root on the right
         hand side. Default False.
+
     Returns
     -------
     cboxes: dict
